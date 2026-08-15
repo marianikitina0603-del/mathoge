@@ -21,8 +21,39 @@ practicalStyles.textContent=`
 .source-condition{white-space:normal;line-height:1.65}
 .practical-set-list{border-top:1px solid var(--line)}
 .practical-set-list .task-card h4{display:none}
+.route-data-table{width:100%;max-width:760px;margin:14px 0;border-collapse:collapse;background:#fff;font-size:14px}
+.route-data-table th,.route-data-table td{border:1px solid #5f6673;padding:7px 10px;text-align:center;vertical-align:middle}
+.route-data-table th{font-weight:800;background:#f5f7fb}
 `;
 document.head.appendChild(practicalStyles);
+
+function formatPracticalText(t){
+  if(t.number!==5 || !t.text.includes('|')) return t.text;
+  const parts=t.text.split('<br>');
+  const tableLines=[];
+  const before=[];
+  const after=[];
+  let tableStarted=false,tableEnded=false;
+  parts.forEach(line=>{
+    if(line.includes('|')&&!tableEnded){tableStarted=true;tableLines.push(line.trim());}
+    else if(tableStarted&&!tableEnded){tableEnded=true;after.push(line);}
+    else if(tableEnded) after.push(line);
+    else before.push(line);
+  });
+  if(!tableLines.length) return t.text;
+  const rows=tableLines.map(line=>line.split('|').map(cell=>cell.trim()));
+  const table=`<table class="route-data-table"><thead><tr>${rows[0].map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.slice(1).map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  return before.join('<br>')+table+after.join('<br>');
+}
+
+// Для практических комплектов карточка должна показывать реальный номер задания 1–5,
+// а не фиксированный №6 из старого шаблона банка.
+const standardTaskCard=taskCard;
+taskCard=function(t){
+  if(!(t.number>=1&&t.number<=5)) return standardTaskCard(t);
+  const added=isAdded(t.id);
+  return `<article class="task-card"><div><div class="task-meta"><span class="tag number">№${t.number}</span><span class="tag">${t.kind}</span></div><p class="task-math">${formatPracticalText(t)}</p></div><div class="task-side"><span class="task-id">ID ${t.id}</span><button class="add-button ${added?'added':''}" data-add="${t.id}">${added?'✓ Добавлено':'+ В вариант'}</button></div></article>`;
+};
 
 function renderPracticalStructure(){
   return `<details class="number-accordion practical-number-accordion">
