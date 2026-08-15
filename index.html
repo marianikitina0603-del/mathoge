@@ -12,215 +12,61 @@
 <body>
   <div class="app-shell">
     <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-mark">M</div>
-        <div>
-          <div class="brand-name">MathOGE</div>
-          <div class="brand-subtitle">Конструктор ОГЭ</div>
-        </div>
-      </div>
-
+      <div class="brand"><div class="brand-mark">M</div><div><div class="brand-name">MathOGE</div><div class="brand-subtitle">Конструктор ОГЭ</div></div></div>
       <nav class="nav" aria-label="Основная навигация">
         <button class="nav-item active" data-page="home"><span>⌂</span>Главная</button>
         <button class="nav-item" data-page="bank"><span>▦</span>Банк заданий</button>
         <button class="nav-item" data-page="builder"><span>＋</span>Собрать вариант</button>
         <button class="nav-item" data-page="generator"><span>✦</span>Сгенерировать</button>
+        <button class="nav-item" data-page="preview"><span>◫</span>Предпросмотр</button>
         <button class="nav-item" data-page="saved"><span>♡</span>Мои варианты</button>
       </nav>
-
-      <div class="sidebar-card">
-        <div class="sidebar-card-title">Банк заданий</div>
-        <div class="sidebar-stat"><strong id="bankCount">0</strong><span>заданий в демо</span></div>
-        <div class="sidebar-stat"><strong>25</strong><span>номеров ОГЭ</span></div>
-      </div>
+      <div class="sidebar-card"><div class="sidebar-card-title">Банк заданий</div><div class="sidebar-stat"><strong id="bankCount">0</strong><span>заданий в демо</span></div><div class="sidebar-stat"><strong>25</strong><span>номеров ОГЭ</span></div></div>
     </aside>
 
     <main class="main">
       <header class="topbar">
-        <div>
-          <div class="eyebrow">Подготовка к ОГЭ по математике</div>
-          <h1 id="pageTitle">Главная</h1>
-        </div>
-        <div class="top-actions">
-          <button class="ghost-button" id="showVariantBtn">Текущий вариант <span class="count-badge" id="variantCount">0</span></button>
-          <button class="primary-button" data-go="builder">+ Новый вариант</button>
-        </div>
+        <div><div class="eyebrow">Подготовка к ОГЭ по математике</div><h1 id="pageTitle">Главная</h1></div>
+        <div class="top-actions"><button class="ghost-button" id="showVariantBtn">Текущий вариант <span class="count-badge" id="variantCount">0</span></button><button class="primary-button" data-go="builder">+ Новый вариант</button></div>
       </header>
 
       <section class="page active" id="page-home">
-        <div class="hero-card">
-          <div class="hero-copy">
-            <span class="hero-label">Конструктор вариантов</span>
-            <h2>Собирайте тренировочные варианты за несколько минут</h2>
-            <p>Выбирайте задания вручную, генерируйте случайный вариант по номерам ОГЭ и сохраняйте готовые подборки.</p>
-            <div class="hero-actions">
-              <button class="primary-button large" data-go="builder">Собрать вариант</button>
-              <button class="secondary-button large" data-go="generator">Сгенерировать</button>
-            </div>
-          </div>
-          <div class="hero-visual" aria-hidden="true">
-            <div class="sheet sheet-back"></div>
-            <div class="sheet sheet-front">
-              <div class="sheet-line short"></div>
-              <div class="sheet-line"></div>
-              <div class="sheet-line"></div>
-              <div class="task-pill">№8</div>
-              <div class="sheet-line"></div>
-              <div class="sheet-line short"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-heading">
-          <div>
-            <span class="eyebrow">Быстрый старт</span>
-            <h2>Что хотите сделать?</h2>
-          </div>
-        </div>
-
-        <div class="action-grid">
-          <button class="action-card" data-go="builder">
-            <span class="action-icon">＋</span>
-            <strong>Собрать вариант</strong>
-            <span>Выбрать конкретные задания из банка вручную</span>
-            <em>Перейти →</em>
-          </button>
-          <button class="action-card" data-go="generator">
-            <span class="action-icon">✦</span>
-            <strong>Сгенерировать вариант</strong>
-            <span>Задать номера и количество, остальное сделает система</span>
-            <em>Перейти →</em>
-          </button>
-          <button class="action-card" data-go="bank">
-            <span class="action-icon">▦</span>
-            <strong>Открыть банк</strong>
-            <span>Найти задания по номеру, разделу, теме и прототипу</span>
-            <em>Перейти →</em>
-          </button>
-        </div>
-
-        <div class="overview-grid">
-          <div class="panel">
-            <div class="panel-title-row">
-              <div>
-                <span class="eyebrow">Структура экзамена</span>
-                <h3>Разделы банка</h3>
-              </div>
-            </div>
-            <div class="category-list">
-              <div class="category-row"><span class="category-dot practical"></span><div><strong>Практические задачи</strong><small>№1–5</small></div><b>5</b></div>
-              <div class="category-row"><span class="category-dot algebra"></span><div><strong>Алгебра</strong><small>№6–14</small></div><b>9</b></div>
-              <div class="category-row"><span class="category-dot geometry"></span><div><strong>Геометрия</strong><small>№15–19</small></div><b>5</b></div>
-              <div class="category-row"><span class="category-dot advanced"></span><div><strong>Развёрнутый ответ</strong><small>№20–25</small></div><b>6</b></div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <span class="eyebrow">Текущий вариант</span>
-            <h3>Пока ничего не добавлено</h3>
-            <p class="muted" id="currentVariantText">Откройте банк заданий или конструктор и добавьте первые задачи.</p>
-            <div id="miniVariant" class="mini-variant"></div>
-            <button class="secondary-button full" data-go="builder">Открыть конструктор</button>
-          </div>
-        </div>
+        <div class="hero-card"><div class="hero-copy"><span class="hero-label">Конструктор вариантов</span><h2>Собирайте тренировочные варианты за несколько минут</h2><p>Выбирайте задания вручную, генерируйте случайный вариант по номерам ОГЭ и сохраняйте готовые подборки.</p><div class="hero-actions"><button class="primary-button large" data-go="builder">Собрать вариант</button><button class="secondary-button large" data-go="generator">Сгенерировать</button></div></div><div class="hero-visual"><div class="sheet sheet-back"></div><div class="sheet sheet-front"><div class="sheet-line short"></div><div class="sheet-line"></div><div class="sheet-line"></div><div class="task-pill">№8</div><div class="sheet-line"></div><div class="sheet-line short"></div></div></div></div>
+        <div class="section-heading"><div><span class="eyebrow">Быстрый старт</span><h2>Что хотите сделать?</h2></div></div>
+        <div class="action-grid"><button class="action-card" data-go="builder"><span class="action-icon">＋</span><strong>Собрать вариант</strong><span>Банк слева, текущий вариант справа</span><em>Перейти →</em></button><button class="action-card" data-go="generator"><span class="action-icon">✦</span><strong>Сгенерировать вариант</strong><span>Задать номера и количество, остальное сделает система</span><em>Перейти →</em></button><button class="action-card" data-go="preview"><span class="action-icon">◫</span><strong>Предпросмотр</strong><span>Посмотреть вариант так, как его увидит ученик</span><em>Перейти →</em></button></div>
+        <div class="overview-grid"><div class="panel"><span class="eyebrow">Структура экзамена</span><h3>Разделы банка</h3><div class="category-list"><div class="category-row"><span class="category-dot practical"></span><div><strong>Практические задачи</strong><small>№1–5</small></div><b>5</b></div><div class="category-row"><span class="category-dot algebra"></span><div><strong>Алгебра</strong><small>№6–14</small></div><b>9</b></div><div class="category-row"><span class="category-dot geometry"></span><div><strong>Геометрия</strong><small>№15–19</small></div><b>5</b></div><div class="category-row"><span class="category-dot advanced"></span><div><strong>Развёрнутый ответ</strong><small>№20–25</small></div><b>6</b></div></div></div><div class="panel"><span class="eyebrow">Текущий вариант</span><h3>Ваша подборка</h3><p class="muted" id="currentVariantText"></p><div id="miniVariant" class="mini-variant"></div><button class="secondary-button full" data-go="builder">Открыть конструктор</button></div></div>
       </section>
 
-      <section class="page" id="page-bank">
-        <div class="workspace-grid">
-          <aside class="filters panel">
-            <div class="panel-title-row"><h3>Фильтры</h3><button class="text-button" id="resetFilters">Сбросить</button></div>
-            <label>Поиск
-              <input id="searchInput" type="search" placeholder="Тема, текст, ID..." />
-            </label>
-            <label>Номер ОГЭ
-              <select id="numberFilter"><option value="">Все номера</option></select>
-            </label>
-            <label>Раздел
-              <select id="sectionFilter">
-                <option value="">Все разделы</option>
-                <option>Практические задачи</option>
-                <option>Алгебра</option>
-                <option>Геометрия</option>
-                <option>Развёрнутый ответ</option>
-              </select>
-            </label>
-            <label>Прототип
-              <input id="prototypeFilter" type="number" min="1" placeholder="Например, 3" />
-            </label>
-            <div class="check-row"><input id="demoFilter" type="checkbox" /><label for="demoFilter">Только DEMO</label></div>
-            <div class="check-row"><input id="newFilter" type="checkbox" /><label for="newFilter">Только NEW</label></div>
-          </aside>
-
-          <div class="content-column">
-            <div class="toolbar panel compact">
-              <div><strong id="resultCount">0</strong> заданий найдено</div>
-              <select id="sortSelect"><option value="number">По номеру ОГЭ</option><option value="id">По ID</option></select>
-            </div>
-            <div id="taskList" class="task-list"></div>
-          </div>
-        </div>
-      </section>
+      <section class="page" id="page-bank"><div class="workspace-grid"><aside class="filters panel"><div class="panel-title-row"><h3>Фильтры</h3><button class="text-button" id="resetFilters">Сбросить</button></div><label>Поиск<input id="searchInput" type="search" placeholder="Тема, текст, ID..." /></label><label>Номер ОГЭ<select id="numberFilter"><option value="">Все номера</option></select></label><label>Раздел<select id="sectionFilter"><option value="">Все разделы</option><option>Практические задачи</option><option>Алгебра</option><option>Геометрия</option><option>Развёрнутый ответ</option></select></label><label>Прототип<input id="prototypeFilter" type="number" min="1" placeholder="Например, 3" /></label><div class="check-row"><input id="demoFilter" type="checkbox" /><label for="demoFilter">Только DEMO</label></div><div class="check-row"><input id="newFilter" type="checkbox" /><label for="newFilter">Только NEW</label></div></aside><div class="content-column"><div class="toolbar panel compact"><div><strong id="resultCount">0</strong> заданий найдено</div><select id="sortSelect"><option value="number">По номеру ОГЭ</option><option value="id">По ID</option></select></div><div id="taskList" class="task-list"></div></div></div></section>
 
       <section class="page" id="page-builder">
-        <div class="builder-layout">
-          <div class="panel">
-            <div class="panel-title-row">
-              <div><span class="eyebrow">Ручная сборка</span><h3>Текущий вариант</h3></div>
-              <button class="text-button danger" id="clearVariant">Очистить</button>
-            </div>
+        <div class="builder-header panel compact"><div><span class="eyebrow">Двухпанельный конструктор</span><h3>Соберите вариант в одном окне</h3></div><div class="builder-header-actions"><button class="ghost-button" id="clearVariant">Очистить</button><button class="primary-button" data-go="preview">Предпросмотр</button></div></div>
+        <div class="split-builder">
+          <section class="builder-bank panel">
+            <div class="panel-title-row"><div><span class="eyebrow">Шаг 1</span><h3>Банк заданий</h3></div><span class="count-badge" id="builderResultCount">0</span></div>
+            <div class="builder-filterbar"><input id="builderSearch" type="search" placeholder="Поиск по теме, тексту, ID"><select id="builderNumberFilter"><option value="">Все №</option></select><select id="builderSectionFilter"><option value="">Все разделы</option><option>Практические задачи</option><option>Алгебра</option><option>Геометрия</option><option>Развёрнутый ответ</option></select></div>
+            <div id="builderBankList" class="builder-bank-list"></div>
+          </section>
+          <aside class="builder-variant panel">
+            <div class="panel-title-row"><div><span class="eyebrow">Шаг 2</span><h3>Текущий вариант</h3></div><span class="count-badge" id="builderVariantCount">0</span></div>
+            <div class="variant-summary-strip"><span>Часть 1: <b id="summaryPart1">0</b></span><span>Часть 2: <b id="summaryPart2">0</b></span></div>
             <div id="builderList" class="builder-list"></div>
-            <div class="builder-empty" id="builderEmpty">
-              <div class="empty-icon">＋</div>
-              <h3>Вариант пока пуст</h3>
-              <p>Добавьте задания из банка или воспользуйтесь генератором.</p>
-              <button class="primary-button" data-go="bank">Перейти в банк</button>
-            </div>
-          </div>
-          <aside class="panel summary-card">
-            <span class="eyebrow">Итог</span>
-            <h3>Параметры варианта</h3>
-            <div class="summary-line"><span>Заданий</span><strong id="summaryCount">0</strong></div>
-            <div class="summary-line"><span>Часть 1</span><strong id="summaryPart1">0</strong></div>
-            <div class="summary-line"><span>Часть 2</span><strong id="summaryPart2">0</strong></div>
-            <label>Название варианта<input id="variantName" value="Тренировочный вариант" /></label>
-            <button class="primary-button full" id="saveVariantBtn">Сохранить вариант</button>
+            <div class="builder-empty" id="builderEmpty"><div class="empty-icon">＋</div><h3>Добавьте первое задание</h3><p>Выберите карточку слева — она сразу появится здесь.</p></div>
+            <div class="builder-footer"><label>Название варианта<input id="variantName" value="Тренировочный вариант" /></label><button class="secondary-button full" id="saveVariantBtn">Сохранить</button><button class="primary-button full" data-go="preview">Открыть предпросмотр</button></div>
           </aside>
         </div>
       </section>
 
-      <section class="page" id="page-generator">
-        <div class="generator-grid">
-          <div class="panel">
-            <span class="eyebrow">Автоподбор</span>
-            <h3>Настройте состав варианта</h3>
-            <p class="muted">Укажите количество заданий по нужным номерам. Генератор выберет случайные задачи из доступного банка.</p>
-            <div id="generatorRows" class="generator-rows"></div>
-          </div>
-          <aside class="panel summary-card sticky">
-            <span class="eyebrow">Параметры</span>
-            <h3>Генерация</h3>
-            <div class="summary-line"><span>Будет заданий</span><strong id="generationTotal">0</strong></div>
-            <div class="check-row"><input id="uniquePrototype" type="checkbox" checked /><label for="uniquePrototype">Не повторять прототипы</label></div>
-            <button class="primary-button full" id="generateBtn">Сгенерировать вариант</button>
-            <button class="secondary-button full" id="standardPresetBtn">Стандартный пресет 1–19</button>
-          </aside>
-        </div>
+      <section class="page" id="page-generator"><div class="generator-grid"><div class="panel"><span class="eyebrow">Автоподбор</span><h3>Настройте состав варианта</h3><p class="muted">Укажите количество заданий по нужным номерам.</p><div id="generatorRows" class="generator-rows"></div></div><aside class="panel summary-card sticky"><span class="eyebrow">Параметры</span><h3>Генерация</h3><div class="summary-line"><span>Будет заданий</span><strong id="generationTotal">0</strong></div><div class="check-row"><input id="uniquePrototype" type="checkbox" checked /><label for="uniquePrototype">Не повторять прототипы</label></div><button class="primary-button full" id="generateBtn">Сгенерировать вариант</button><button class="secondary-button full" id="standardPresetBtn">Стандартный пресет 1–19</button></aside></div></section>
+
+      <section class="page" id="page-preview">
+        <div class="preview-toolbar panel compact"><div><span class="eyebrow">Версия ученика</span><h3>Предпросмотр варианта</h3></div><div class="preview-actions"><button class="ghost-button" data-go="builder">← В конструктор</button><button class="secondary-button" id="toggleAnswersBtn">Показать ответы</button><button class="primary-button" id="printBtn">Печать</button></div></div>
+        <div class="preview-shell"><article class="exam-paper"><div class="exam-head"><div><div class="exam-kicker">ОГЭ по математике</div><h2 id="previewTitle">Тренировочный вариант</h2></div><div class="exam-meta"><span id="previewTaskCount">0 заданий</span></div></div><div class="exam-instructions">Запишите ответы в отведённых полях. Для заданий с развёрнутым ответом приведите полное решение.</div><div id="previewList" class="preview-list"></div><div id="previewEmpty" class="builder-empty"><h3>Вариант пока пуст</h3><p>Вернитесь в конструктор и добавьте задания.</p><button class="primary-button" data-go="builder">Собрать вариант</button></div></article></div>
       </section>
 
-      <section class="page" id="page-saved">
-        <div class="panel">
-          <div class="panel-title-row"><div><span class="eyebrow">Локальное хранение</span><h3>Мои варианты</h3></div></div>
-          <div id="savedVariants" class="saved-grid"></div>
-          <div id="savedEmpty" class="builder-empty">
-            <div class="empty-icon">♡</div>
-            <h3>Сохранённых вариантов пока нет</h3>
-            <p>Соберите вариант и сохраните его — он останется в этом браузере.</p>
-          </div>
-        </div>
-      </section>
+      <section class="page" id="page-saved"><div class="panel"><div class="panel-title-row"><div><span class="eyebrow">Локальное хранение</span><h3>Мои варианты</h3></div></div><div id="savedVariants" class="saved-grid"></div><div id="savedEmpty" class="builder-empty"><div class="empty-icon">♡</div><h3>Сохранённых вариантов пока нет</h3><p>Соберите вариант и сохраните его.</p></div></div></section>
     </main>
   </div>
-
   <div class="toast" id="toast"></div>
   <script src="js/app.js"></script>
 </body>
