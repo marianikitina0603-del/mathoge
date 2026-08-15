@@ -1,62 +1,99 @@
-// Двухуровневый раскрывающийся банк: номер ОГЭ → прототип → аналоги.
+// Раскрывающийся банк заданий.
+// №1–5: Практические задания → тематические блоки → комплекты по 5 задач.
+// №6 и далее: номер ОГЭ → прототип → аналоги.
+
+const practicalSetStructure = [
+  { key:'routes', title:'Маршруты' },
+  { key:'plots', title:'Участки' },
+  { key:'apartments', title:'Квартиры' },
+  { key:'sheets', title:'Листы' },
+  { key:'stoves', title:'Печки' },
+  { key:'tariffs', title:'Тарифы' },
+  { key:'tires', title:'Шины' }
+];
+
+function renderPracticalStructure(){
+  return `<details class="number-accordion practical-number-accordion">
+    <summary class="number-summary">
+      <span class="accordion-chevron">›</span>
+      <span class="number-badge">№1–5</span>
+      <span class="number-title">Практические задания</span>
+      <span class="number-stats">7 типов</span>
+    </summary>
+    <div class="number-content practical-types">
+      ${practicalSetStructure.map(type=>{
+        const typeTasks=tasks.filter(t=>t.number>=1&&t.number<=5&&t.practicalType===type.key);
+        const setNumbers=[...new Set(typeTasks.map(t=>t.set))].filter(Boolean).sort((a,b)=>a-b);
+        return `<details class="prototype-accordion practical-type-accordion">
+          <summary class="prototype-summary">
+            <span class="accordion-chevron">›</span>
+            <span class="prototype-main"><strong>${type.title}</strong></span>
+            <span class="analog-count">${setNumbers.length} комплектов</span>
+          </summary>
+          <div class="prototype-content practical-sets">
+            ${setNumbers.length ? setNumbers.map(setNo=>{
+              const setTasks=typeTasks.filter(t=>t.set===setNo).sort((a,b)=>a.number-b.number);
+              return `<details class="analogs-accordion practical-set-accordion">
+                <summary class="analogs-summary">
+                  <span class="accordion-chevron">›</span>
+                  <strong>Комплект ${setNo}</strong>
+                  <span>${setTasks.length} задач</span>
+                </summary>
+                <div class="analogs-list practical-set-list">
+                  ${setTasks.map(t=>taskCard(t)).join('')}
+                </div>
+              </details>`;
+            }).join('') : '<div class="empty-bank compact-empty">Комплекты будут добавлены из банка ФИПИ.</div>'}
+          </div>
+        </details>`;
+      }).join('')}
+    </div>
+  </details>`;
+}
+
+function renderStandardNumber(number){
+  const numberTasks=tasks.filter(t=>t.number===number);
+  const prototypes=numberTasks.filter(t=>t.kind==='Прототип').sort((a,b)=>a.prototype-b.prototype);
+  const topic=numberTasks[0]?.topic||'';
+
+  const prototypeHtml=prototypes.map(proto=>{
+    const analogs=numberTasks.filter(t=>t.kind==='Аналог'&&t.prototype===proto.prototype)
+      .sort((a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true}));
+    const added=isAdded(proto.id);
+    return `<details class="prototype-accordion">
+      <summary class="prototype-summary">
+        <span class="accordion-chevron">›</span>
+        <span class="prototype-main"><strong>Прототип ${proto.prototype}</strong><span class="prototype-id">${proto.id}</span></span>
+        ${proto.demo?'<span class="tag demo">DEMO</span>':''}
+        <span class="analog-count">${analogs.length} аналогов</span>
+      </summary>
+      <div class="prototype-content">
+        <article class="prototype-task-card">
+          <div class="prototype-task-copy"><div class="task-meta"><span class="tag number">№${number}</span><span class="tag">Прототип</span></div><p class="task-math">${proto.text}</p></div>
+          <button class="add-button ${added?'added':''}" data-add="${proto.id}">${added?'✓ Добавлено':'+ В вариант'}</button>
+        </article>
+        <details class="analogs-accordion">
+          <summary class="analogs-summary"><span class="accordion-chevron">›</span><strong>Аналоги прототипа ${proto.prototype}</strong><span>${analogs.length}</span></summary>
+          <div class="analogs-list">${analogs.length?analogs.map(a=>taskCard(a)).join(''):'<div class="empty-bank compact-empty">Аналогов пока нет.</div>'}</div>
+        </details>
+      </div>
+    </details>`;
+  }).join('');
+
+  return `<details class="number-accordion">
+    <summary class="number-summary">
+      <span class="accordion-chevron">›</span><span class="number-badge">№${number}</span><span class="number-title">${topic}</span>
+      <span class="number-stats">${prototypes.length} прототипов · ${numberTasks.filter(t=>t.kind==='Аналог').length} аналогов</span>
+    </summary>
+    <div class="number-content">${prototypeHtml||'<div class="empty-bank">Прототипов пока нет.</div>'}</div>
+  </details>`;
+}
+
 function renderBank(){
   const root=$('#taskList');
-  const numbers=[...new Set(tasks.map(t=>t.number))].sort((a,b)=>a-b);
+  const standardNumbers=[...new Set(tasks.filter(t=>t.number>=6).map(t=>t.number))].sort((a,b)=>a-b);
   $('#resultCount').textContent=tasks.length;
-
-  root.innerHTML=numbers.map(number=>{
-    const numberTasks=tasks.filter(t=>t.number===number);
-    const prototypes=numberTasks.filter(t=>t.kind==='Прототип').sort((a,b)=>a.prototype-b.prototype);
-    const topic=numberTasks[0]?.topic||'';
-
-    const prototypeHtml=prototypes.map(proto=>{
-      const analogs=numberTasks.filter(t=>t.kind==='Аналог'&&t.prototype===proto.prototype)
-        .sort((a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true}));
-      const added=isAdded(proto.id);
-
-      return `<details class="prototype-accordion">
-        <summary class="prototype-summary">
-          <span class="accordion-chevron">›</span>
-          <span class="prototype-main">
-            <strong>Прототип ${proto.prototype}</strong>
-            <span class="prototype-id">${proto.id}</span>
-          </span>
-          ${proto.demo?'<span class="tag demo">DEMO</span>':''}
-          <span class="analog-count">${analogs.length} аналогов</span>
-        </summary>
-        <div class="prototype-content">
-          <article class="prototype-task-card">
-            <div class="prototype-task-copy">
-              <div class="task-meta"><span class="tag number">№${number}</span><span class="tag">Прототип</span></div>
-              <p class="task-math">${proto.text}</p>
-            </div>
-            <button class="add-button ${added?'added':''}" data-add="${proto.id}">${added?'✓ Добавлено':'+ В вариант'}</button>
-          </article>
-          <details class="analogs-accordion">
-            <summary class="analogs-summary">
-              <span class="accordion-chevron">›</span>
-              <strong>Аналоги прототипа ${proto.prototype}</strong>
-              <span>${analogs.length}</span>
-            </summary>
-            <div class="analogs-list">
-              ${analogs.length?analogs.map(a=>taskCard(a)).join(''):'<div class="empty-bank compact-empty">Аналогов пока нет.</div>'}
-            </div>
-          </details>
-        </div>
-      </details>`;
-    }).join('');
-
-    return `<details class="number-accordion">
-      <summary class="number-summary">
-        <span class="accordion-chevron">›</span>
-        <span class="number-badge">№${number}</span>
-        <span class="number-title">${topic}</span>
-        <span class="number-stats">${prototypes.length} прототипов · ${numberTasks.filter(t=>t.kind==='Аналог').length} аналогов</span>
-      </summary>
-      <div class="number-content">${prototypeHtml||'<div class="empty-bank">Прототипов пока нет.</div>'}</div>
-    </details>`;
-  }).join('')||'<div class="empty-bank">Заданий пока нет.</div>';
-
+  root.innerHTML=renderPracticalStructure()+standardNumbers.map(renderStandardNumber).join('');
   $$('#taskList [data-add]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();toggleTask(b.dataset.add)});
 }
 
