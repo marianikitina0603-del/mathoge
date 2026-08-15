@@ -12,6 +12,18 @@ const practicalSetStructure = [
   { key:'tires', title:'Шины' }
 ];
 
+const practicalStyles=document.createElement('style');
+practicalStyles.textContent=`
+.practical-set-body{border-top:1px solid var(--line)}
+.practical-context{margin:14px;padding:18px;border:1px solid var(--line);border-radius:14px;background:#f8faff;line-height:1.65}
+.practical-context-title{font-size:12px;font-weight:800;color:var(--primary);margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em}
+.plan-note{margin-top:14px;padding:10px 12px;border-radius:10px;background:#fff7e6;color:#845d12;font-size:12px}
+.source-condition{white-space:normal;line-height:1.65}
+.practical-set-list{border-top:1px solid var(--line)}
+.practical-set-list .task-card h4{display:none}
+`;
+document.head.appendChild(practicalStyles);
+
 function renderPracticalStructure(){
   return `<details class="number-accordion practical-number-accordion">
     <summary class="number-summary">
@@ -73,5 +85,12 @@ function renderBank(){
   $$('#taskList [data-add]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();toggleTask(b.dataset.add)});
 }
 
-renderBank();
-updateCounters();
+function loadScript(src){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.body.appendChild(s)})}
+async function initBank(){
+  try{
+    for(let i=1;i<=6;i++) await loadScript(`js/routes-part-${i}.js`);
+  }catch(e){console.error('Не удалось загрузить комплекты Маршруты',e)}
+  renderBank();
+  updateCounters();
+}
+initBank();
