@@ -22,11 +22,11 @@ practicalStyles.textContent=`
 .practical-set-list{border-top:1px solid var(--line)}
 .practical-set-list .task-card h4{display:none}
 .route-data-table{width:100%;max-width:760px;margin:14px 0;border-collapse:collapse;background:#fff;font-size:14px}
-.route-data-table th,.route-data-table td{border:1px solid #5f6673;padding:7px 10px;text-align:center;vertical-align:middle}
+.route-data-table th,.route-data-table td{border:1.5px solid #3f4652;padding:8px 10px;text-align:center;vertical-align:middle}
 .route-data-table th{font-weight:800;background:#f5f7fb}
 .route-task1-table{width:auto;min-width:420px;max-width:100%}
 .route-task1-table td:first-child{font-weight:700;text-align:left;background:#f5f7fb}
-.route-task1-table .answer-cell{height:34px;min-width:74px;background:#fff}
+.route-task1-table .answer-cell{height:36px;min-width:74px;background:#fff}
 .practical-set-summary{gap:12px}
 .practical-set-summary .set-add-button{margin-left:auto;flex:0 0 auto}
 .practical-set-list .task-side{display:none}
@@ -35,15 +35,26 @@ practicalStyles.textContent=`
 document.head.appendChild(practicalStyles);
 
 function formatTask1Table(text){
-  // В исходных данных таблица задания №1 хранится как две текстовые строки:
-  // «Населённые пункты ...»/«Деревни ...» и «Цифры».
-  const marker=/<br>(Населённые пункты|Деревни)\s+([^<]+)<br>Цифры\s*$/i;
-  const match=text.match(marker);
-  if(!match)return text;
-  const labels=match[2].trim().split(/\s+/).filter(Boolean);
-  const intro=text.slice(0,match.index);
-  const table=`<table class="route-data-table route-task1-table"><tbody><tr><td>${match[1]}</td>${labels.map(x=>`<td>${x}</td>`).join('')}</tr><tr><td>Цифры</td>${labels.map(()=>'<td class="answer-cell"></td>').join('')}</tr></tbody></table>`;
-  return intro+table;
+  // Разбираем реальные строки из файлов Маршрутов, а не жёсткое регулярное выражение.
+  const lines=text.split('<br>');
+  const rowIndex=lines.findIndex(line=>/^\s*(Населённые пункты|Деревни)\s+/i.test(line));
+  if(rowIndex<0)return text;
+
+  const row=lines[rowIndex].trim();
+  const titleMatch=row.match(/^\s*(Населённые пункты|Деревни)\s+/i);
+  if(!titleMatch)return text;
+
+  const firstCell=titleMatch[1];
+  const places=row.slice(titleMatch[0].length).trim().split(/\s+/).filter(Boolean);
+  if(!places.length)return text;
+
+  let digitsIndex=lines.findIndex((line,i)=>i>rowIndex&&/^\s*Цифры\s*$/i.test(line));
+  if(digitsIndex<0)digitsIndex=rowIndex+1;
+
+  const before=lines.slice(0,rowIndex).join('<br>');
+  const after=lines.slice(digitsIndex+1).join('<br>');
+  const table=`<table class="route-data-table route-task1-table"><tbody><tr><td>${firstCell}</td>${places.map(place=>`<td>${place}</td>`).join('')}</tr><tr><td>Цифры</td>${places.map(()=>'<td class="answer-cell">&nbsp;</td>').join('')}</tr></tbody></table>`;
+  return `${before}${before?'<br>':''}${table}${after?'<br>'+after:''}`;
 }
 
 function formatTask5Table(text){
