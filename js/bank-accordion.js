@@ -33,14 +33,16 @@ function renderPracticalStructure(){
           <div class="prototype-content practical-sets">
             ${setNumbers.length ? setNumbers.map(setNo=>{
               const setTasks=typeTasks.filter(t=>t.set===setNo).sort((a,b)=>a.number-b.number);
+              const context=setTasks.find(t=>t.context)?.context||'';
               return `<details class="analogs-accordion practical-set-accordion">
                 <summary class="analogs-summary">
                   <span class="accordion-chevron">›</span>
                   <strong>Комплект ${setNo}</strong>
                   <span>${setTasks.length} задач</span>
                 </summary>
-                <div class="analogs-list practical-set-list">
-                  ${setTasks.map(t=>taskCard(t)).join('')}
+                <div class="practical-set-body">
+                  ${context?`<div class="practical-context"><div class="practical-context-title">Общее условие к заданиям 1–5</div>${context}<div class="plan-note">План относится к общему условию и будет перенесён из исходного PDF отдельным изображением.</div></div>`:''}
+                  <div class="analogs-list practical-set-list">${setTasks.map(t=>taskCard(t)).join('')}</div>
                 </div>
               </details>`;
             }).join('') : '<div class="empty-bank compact-empty">Комплекты будут добавлены из банка ФИПИ.</div>'}
@@ -55,38 +57,12 @@ function renderStandardNumber(number){
   const numberTasks=tasks.filter(t=>t.number===number);
   const prototypes=numberTasks.filter(t=>t.kind==='Прототип').sort((a,b)=>a.prototype-b.prototype);
   const topic=numberTasks[0]?.topic||'';
-
   const prototypeHtml=prototypes.map(proto=>{
-    const analogs=numberTasks.filter(t=>t.kind==='Аналог'&&t.prototype===proto.prototype)
-      .sort((a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true}));
+    const analogs=numberTasks.filter(t=>t.kind==='Аналог'&&t.prototype===proto.prototype).sort((a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true}));
     const added=isAdded(proto.id);
-    return `<details class="prototype-accordion">
-      <summary class="prototype-summary">
-        <span class="accordion-chevron">›</span>
-        <span class="prototype-main"><strong>Прототип ${proto.prototype}</strong><span class="prototype-id">${proto.id}</span></span>
-        ${proto.demo?'<span class="tag demo">DEMO</span>':''}
-        <span class="analog-count">${analogs.length} аналогов</span>
-      </summary>
-      <div class="prototype-content">
-        <article class="prototype-task-card">
-          <div class="prototype-task-copy"><div class="task-meta"><span class="tag number">№${number}</span><span class="tag">Прототип</span></div><p class="task-math">${proto.text}</p></div>
-          <button class="add-button ${added?'added':''}" data-add="${proto.id}">${added?'✓ Добавлено':'+ В вариант'}</button>
-        </article>
-        <details class="analogs-accordion">
-          <summary class="analogs-summary"><span class="accordion-chevron">›</span><strong>Аналоги прототипа ${proto.prototype}</strong><span>${analogs.length}</span></summary>
-          <div class="analogs-list">${analogs.length?analogs.map(a=>taskCard(a)).join(''):'<div class="empty-bank compact-empty">Аналогов пока нет.</div>'}</div>
-        </details>
-      </div>
-    </details>`;
+    return `<details class="prototype-accordion"><summary class="prototype-summary"><span class="accordion-chevron">›</span><span class="prototype-main"><strong>Прототип ${proto.prototype}</strong><span class="prototype-id">${proto.id}</span></span>${proto.demo?'<span class="tag demo">DEMO</span>':''}<span class="analog-count">${analogs.length} аналогов</span></summary><div class="prototype-content"><article class="prototype-task-card"><div class="prototype-task-copy"><div class="task-meta"><span class="tag number">№${number}</span><span class="tag">Прототип</span></div><p class="task-math">${proto.text}</p></div><button class="add-button ${added?'added':''}" data-add="${proto.id}">${added?'✓ Добавлено':'+ В вариант'}</button></article><details class="analogs-accordion"><summary class="analogs-summary"><span class="accordion-chevron">›</span><strong>Аналоги прототипа ${proto.prototype}</strong><span>${analogs.length}</span></summary><div class="analogs-list">${analogs.length?analogs.map(a=>taskCard(a)).join(''):'<div class="empty-bank compact-empty">Аналогов пока нет.</div>'}</div></details></div></details>`;
   }).join('');
-
-  return `<details class="number-accordion">
-    <summary class="number-summary">
-      <span class="accordion-chevron">›</span><span class="number-badge">№${number}</span><span class="number-title">${topic}</span>
-      <span class="number-stats">${prototypes.length} прототипов · ${numberTasks.filter(t=>t.kind==='Аналог').length} аналогов</span>
-    </summary>
-    <div class="number-content">${prototypeHtml||'<div class="empty-bank">Прототипов пока нет.</div>'}</div>
-  </details>`;
+  return `<details class="number-accordion"><summary class="number-summary"><span class="accordion-chevron">›</span><span class="number-badge">№${number}</span><span class="number-title">${topic}</span><span class="number-stats">${prototypes.length} прототипов · ${numberTasks.filter(t=>t.kind==='Аналог').length} аналогов</span></summary><div class="number-content">${prototypeHtml||'<div class="empty-bank">Прототипов пока нет.</div>'}</div></details>`;
 }
 
 function renderBank(){
@@ -98,3 +74,4 @@ function renderBank(){
 }
 
 renderBank();
+updateCounters();
