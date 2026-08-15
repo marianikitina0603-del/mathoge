@@ -24,6 +24,10 @@ practicalStyles.textContent=`
 .route-data-table{width:100%;max-width:760px;margin:14px 0;border-collapse:collapse;background:#fff;font-size:14px}
 .route-data-table th,.route-data-table td{border:1px solid #5f6673;padding:7px 10px;text-align:center;vertical-align:middle}
 .route-data-table th{font-weight:800;background:#f5f7fb}
+.practical-set-summary{gap:12px}
+.practical-set-summary .set-add-button{margin-left:auto;flex:0 0 auto}
+.practical-set-list .task-side{display:none}
+.practical-set-list .task-card{grid-template-columns:1fr}
 `;
 document.head.appendChild(practicalStyles);
 
@@ -46,14 +50,33 @@ function formatPracticalText(t){
   return before.join('<br>')+table+after.join('<br>');
 }
 
-// Для практических комплектов карточка должна показывать реальный номер задания 1–5,
-// а не фиксированный №6 из старого шаблона банка.
+// Внутри практического комплекта задания показываются без отдельных кнопок добавления.
 const standardTaskCard=taskCard;
 taskCard=function(t){
   if(!(t.number>=1&&t.number<=5)) return standardTaskCard(t);
-  const added=isAdded(t.id);
-  return `<article class="task-card"><div><div class="task-meta"><span class="tag number">№${t.number}</span><span class="tag">${t.kind}</span></div><p class="task-math">${formatPracticalText(t)}</p></div><div class="task-side"><span class="task-id">ID ${t.id}</span><button class="add-button ${added?'added':''}" data-add="${t.id}">${added?'✓ Добавлено':'+ В вариант'}</button></div></article>`;
+  return `<article class="task-card"><div><div class="task-meta"><span class="tag number">№${t.number}</span><span class="tag">${t.kind}</span></div><p class="task-math">${formatPracticalText(t)}</p></div></article>`;
 };
+
+function isPracticalSetAdded(setTasks){
+  return setTasks.length>0 && setTasks.every(t=>isAdded(t.id));
+}
+
+function togglePracticalSet(typeKey,setNo){
+  const setTasks=tasks.filter(t=>t.number>=1&&t.number<=5&&t.practicalType===typeKey&&t.set===setNo).sort((a,b)=>a.number-b.number);
+  if(!setTasks.length)return;
+  const allAdded=isPracticalSetAdded(setTasks);
+  if(allAdded){
+    const ids=new Set(setTasks.map(t=>t.id));
+    variant=variant.filter(t=>!ids.has(t.id));
+    toast(`Комплект ${setNo} удалён из варианта`);
+  }else{
+    const existing=new Set(variant.map(t=>t.id));
+    setTasks.forEach(t=>{if(!existing.has(t.id))variant.push(t)});
+    toast(`Комплект ${setNo} добавлен в вариант`);
+  }
+  saveCurrent();
+  renderBank();
+}
 
 function renderPracticalStructure(){
   return `<details class="number-accordion practical-number-accordion">
@@ -77,11 +100,13 @@ function renderPracticalStructure(){
             ${setNumbers.length ? setNumbers.map(setNo=>{
               const setTasks=typeTasks.filter(t=>t.set===setNo).sort((a,b)=>a.number-b.number);
               const context=setTasks.find(t=>t.context)?.context||'';
+              const setAdded=isPracticalSetAdded(setTasks);
               return `<details class="analogs-accordion practical-set-accordion">
-                <summary class="analogs-summary">
+                <summary class="analogs-summary practical-set-summary">
                   <span class="accordion-chevron">›</span>
                   <strong>Комплект ${setNo}</strong>
                   <span>${setTasks.length} задач</span>
+                  <button type="button" class="add-button set-add-button ${setAdded?'added':''}" data-add-set="${type.key}:${setNo}">${setAdded?'✓ Добавлено':'+ В вариант'}</button>
                 </summary>
                 <div class="practical-set-body">
                   ${context?`<div class="practical-context"><div class="practical-context-title">Общее условие к заданиям 1–5</div>${context}<div class="plan-note">План относится к общему условию и будет перенесён из исходного PDF отдельным изображением.</div></div>`:''}
@@ -114,6 +139,11 @@ function renderBank(){
   $('#resultCount').textContent=tasks.length;
   root.innerHTML=renderPracticalStructure()+standardNumbers.map(renderStandardNumber).join('');
   $$('#taskList [data-add]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();toggleTask(b.dataset.add)});
+  $$('#taskList [data-add-set]').forEach(b=>b.onclick=e=>{
+    e.preventDefault();e.stopPropagation();
+    const [typeKey,setNo]=b.dataset.addSet.split(':');
+    togglePracticalSet(typeKey,Number(setNo));
+  });
 }
 
 function loadScript(src){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.body.appendChild(s)})}
