@@ -12,7 +12,14 @@
   const originalRenderBank=window.renderBank;if(typeof originalRenderBank==='function')window.renderBank=function(){originalRenderBank();injectBankPlans();};
   setTimeout(()=>{injectBankPlans();const originalRenderBuilderBank=window.renderBuilderBank;if(typeof originalRenderBuilderBank==='function'&&!originalRenderBuilderBank.__plotsWrapped){const wrapped=function(){originalRenderBuilderBank();injectBuilderPlans();};wrapped.__plotsWrapped=true;window.renderBuilderBank=wrapped;}injectBuilderPlans();},0);
 
-  // Подгружаем «Квартиры» после базовых скриптов и перерисовываем оба банка.
+  // Подгружаем «Квартиры» и после загрузки перерисовываем оба банка.
   const load=(src)=>new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.body.appendChild(s);});
-  (async()=>{try{await load('js/apartments-data.js?v=20260816-1800');await load('js/apartments-format.js?v=20260816-1800');if(typeof window.renderBank==='function')window.renderBank();if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();if(typeof window.updateCounters==='function')window.updateCounters();}catch(e){console.error('Не удалось загрузить комплекты Квартиры',e);}})();
+  (async()=>{try{
+    await load('js/apartments-data.js?v=20260816-1810');
+    await load('js/apartments-format.js?v=20260816-1810');
+    if(typeof window.renderBank==='function')window.renderBank();
+    if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();
+    if(typeof window.refreshApartmentPlans==='function')window.refreshApartmentPlans();
+    if(typeof window.updateCounters==='function')window.updateCounters();
+  }catch(e){console.error('Не удалось загрузить комплекты Квартиры',e);}})();
 })();
