@@ -37,7 +37,7 @@
     if(first.planImage)return first.planImage;
     if(first.image)return first.image;
     if(first.practicalType==='routes'&&first.set){
-      return `assets/routes/route-plan-${String(first.set).padStart(2,'0')}.png`;
+      return `assets/routes-data/route-plan-${String(first.set).padStart(2,'0')}.png`;
     }
     return '';
   }
@@ -45,7 +45,6 @@
   function formattedTaskText(t){
     const html=(typeof window.formatPracticalText==='function')?window.formatPracticalText(t):
       (typeof formatPracticalText==='function'?formatPracticalText(t):t.text);
-    // Позволяем широким таблицам прокручиваться, не меняя их содержимое.
     return String(html).replace(/(<table class="route-data-table[\s\S]*?<\/table>)/g,'<div class="preview-table-scroll">$1</div>');
   }
 
@@ -53,10 +52,7 @@
 
   function renderOneTask(t,displayNumber){
     const text=(t.number>=1&&t.number<=5)?formattedTaskText(t):t.text;
-    return `<article class="preview-task">
-      <div class="preview-task-number">${displayNumber}.</div>
-      <div><h4>Задание №${t.number}</h4><p class="task-math">${text}</p>${answerLine()}</div>
-    </article>`;
+    return `<article class="preview-task"><div class="preview-task-number">${displayNumber}.</div><div><h4>Задание №${t.number}</h4><p class="task-math">${text}</p>${answerLine()}</div></article>`;
   }
 
   function renderPracticalGroup(group,startNumber){
@@ -66,12 +62,8 @@
     const src=planSource(sorted);
     const typeTitle=(typeof practicalSetStructure!=='undefined'&&practicalSetStructure.find(x=>x.key===first.practicalType)?.title)||'Практические задания';
     const tasksHtml=sorted.map((t,i)=>renderOneTask(t,startNumber+i)).join('');
-    const plan=src?`<div class="preview-plan"><div class="preview-plan-title">План к заданиям 1–5</div><img src="${esc(src)}" alt="План к комплекту ${esc(first.set)}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="preview-plan-missing" style="display:none">Изображение плана отсутствует в репозитории.</div></div>`:'';
-    return `<section class="preview-practical-block">
-      <div class="preview-practical-head">№1–5 · ${typeTitle} · Комплект ${esc(first.set)}</div>
-      ${context?`<div class="preview-practical-context">${context}${plan}</div>`:plan}
-      <div class="preview-practical-tasks">${tasksHtml}</div>
-    </section>`;
+    const plan=src?`<div class="preview-plan"><div class="preview-plan-title">План к заданиям 1–5</div><img src="${esc(src)}" alt="План к комплекту ${esc(first.set)}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="preview-plan-missing" style="display:none">Изображение не найдено в assets/routes-data.</div></div>`:'';
+    return `<section class="preview-practical-block"><div class="preview-practical-head">№1–5 · ${typeTitle} · Комплект ${esc(first.set)}</div>${context?`<div class="preview-practical-context">${context}${plan}</div>`:plan}<div class="preview-practical-tasks">${tasksHtml}</div></section>`;
   }
 
   window.renderPreview=function(){
@@ -79,21 +71,13 @@
     $('#previewTitle').textContent=name;
     $('#previewMeta').textContent=`${variant.length} заданий`;
     if(!variant.length){$('#previewList').innerHTML='<p class="muted">Вариант пуст.</p>';return;}
-
-    const renderedPractical=new Set();
-    let html='';
-    let displayNumber=1;
+    const renderedPractical=new Set();let html='';let displayNumber=1;
     variant.forEach(t=>{
       if(t.number>=1&&t.number<=5&&t.practicalType&&t.set){
-        const key=practicalKey(t);
-        if(renderedPractical.has(key))return;
-        renderedPractical.add(key);
+        const key=practicalKey(t);if(renderedPractical.has(key))return;renderedPractical.add(key);
         const group=variant.filter(x=>x.number>=1&&x.number<=5&&practicalKey(x)===key);
-        html+=renderPracticalGroup(group,displayNumber);
-        displayNumber+=group.length;
-      }else{
-        html+=renderOneTask(t,displayNumber++);
-      }
+        html+=renderPracticalGroup(group,displayNumber);displayNumber+=group.length;
+      }else html+=renderOneTask(t,displayNumber++);
     });
     $('#previewList').innerHTML=html;
   };
