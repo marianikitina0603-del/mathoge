@@ -41,13 +41,13 @@
 
   function routePlanSource(setNo){
     if(window.routePlanImages && window.routePlanImages[setNo]) return window.routePlanImages[setNo];
-    return `assets/routes/route-plan-${String(setNo).padStart(2,'0')}.png`;
+    return `assets/routes-data/route-plan-${String(setNo).padStart(2,'0')}.png`;
   }
 
   function practicalContextHtml(type,setNo,setTasks){
     const context=setTasks.find(t=>t.context)?.context||'';
     if(!context && type.key!=='routes') return '';
-    const plan=type.key==='routes' ? `<div class="builder-route-plan-wrap"><div class="builder-route-plan-label">План к заданиям 1–5</div><img class="builder-route-plan" src="${routePlanSource(setNo)}" alt="План. Маршруты, комплект ${setNo}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="builder-plan-missing" style="display:none">Изображение плана пока отсутствует в репозитории.</div></div>` : '';
+    const plan=type.key==='routes' ? `<div class="builder-route-plan-wrap"><div class="builder-route-plan-label">План к заданиям 1–5</div><img class="builder-route-plan" src="${routePlanSource(setNo)}" alt="План. Маршруты, комплект ${setNo}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="builder-plan-missing" style="display:none">Изображение плана отсутствует в папке assets/routes-data.</div></div>` : '';
     return `<div class="builder-practical-context"><div class="builder-practical-context-title">Общее условие к заданиям 1–5</div>${context}${plan}</div>`;
   }
 
