@@ -25,8 +25,11 @@
     return typeof base==='function'?base(t):(t?.text||'');
   };
 
-  function imageBlock(setNo,clsPrefix){
-    return `<div class="${clsPrefix}-route-plan-wrap"><div class="${clsPrefix}-route-plan-label">План к заданиям 1–5</div><img class="${clsPrefix}-route-plan" src="${planPath(setNo)}" alt="План. Участки, комплект ${setNo}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="${clsPrefix==='builder'?'builder-plan-missing':'route-plan-missing'}" style="display:none">Изображение плана отсутствует.</div></div>`;
+  function bankImageBlock(setNo){
+    return `<div class="route-plan-wrap"><div class="route-plan-label">План к заданиям 1–5</div><img class="route-plan-image" src="${planPath(setNo)}" alt="План. Участки, комплект ${setNo}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="route-plan-missing" style="display:none">Изображение плана отсутствует.</div></div>`;
+  }
+  function builderImageBlock(setNo){
+    return `<div class="builder-route-plan-wrap"><div class="builder-route-plan-label">План к заданиям 1–5</div><img class="builder-route-plan" src="${planPath(setNo)}" alt="План. Участки, комплект ${setNo}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="builder-plan-missing" style="display:none">Изображение плана отсутствует.</div></div>`;
   }
 
   function injectBankPlans(){
@@ -37,7 +40,7 @@
         const m=setBlock.querySelector(':scope > summary strong')?.textContent?.match(/Комплект\s+(\d+)/);
         const setNo=m?Number(m[1]):0;if(!setNo)return;
         const grid=setBlock.querySelector('.practical-context-grid');
-        if(grid&&!grid.querySelector('img[src*="plots-data"]'))grid.insertAdjacentHTML('beforeend',imageBlock(setNo,'route'));
+        if(grid&&!grid.querySelector('img[src*="plots-data"]'))grid.insertAdjacentHTML('beforeend',bankImageBlock(setNo));
       });
     });
   }
@@ -50,7 +53,7 @@
         const m=setBlock.querySelector(':scope > summary strong')?.textContent?.match(/Комплект\s+(\d+)/);
         const setNo=m?Number(m[1]):0;if(!setNo)return;
         const grid=setBlock.querySelector('.builder-practical-context-grid');
-        if(grid&&!grid.querySelector('img[src*="plots-data"]'))grid.insertAdjacentHTML('beforeend',imageBlock(setNo,'builder'));
+        if(grid&&!grid.querySelector('img[src*="plots-data"]'))grid.insertAdjacentHTML('beforeend',builderImageBlock(setNo));
       });
     });
   }
