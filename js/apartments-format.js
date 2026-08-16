@@ -33,8 +33,8 @@
     return typeof base==='function'?base(t):(t?.text||'');
   };
 
-  function bankPlan(setNo){return `<div class="route-plan-wrap"><div class="route-plan-label">План к заданиям 1–5</div><img class="route-plan-image" src="${planPath(setNo)}" alt="План квартиры, комплект ${setNo}" loading="lazy"><div class="route-plan-missing" style="display:none">Изображение плана отсутствует.</div></div>`;}
-  function builderPlan(setNo){return `<div class="builder-route-plan-wrap"><div class="builder-route-plan-label">План к заданиям 1–5</div><img class="builder-route-plan" src="${planPath(setNo)}" alt="План квартиры, комплект ${setNo}" loading="lazy"><div class="builder-plan-missing" style="display:none">Изображение плана отсутствует.</div></div>`;}
+  function bankPlan(setNo){return `<div class="route-plan-wrap"><div class="route-plan-label">План к заданиям 1–5</div><img class="route-plan-image" src="${planPath(setNo)}" alt="План квартиры, комплект ${setNo}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="route-plan-missing" style="display:none">Изображение плана отсутствует.</div></div>`;}
+  function builderPlan(setNo){return `<div class="builder-route-plan-wrap"><div class="builder-route-plan-label">План к заданиям 1–5</div><img class="builder-route-plan" src="${planPath(setNo)}" alt="План квартиры, комплект ${setNo}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="builder-plan-missing" style="display:none">Изображение плана отсутствует.</div></div>`;}
 
   function injectBank(){
     document.querySelectorAll('#taskList .practical-type-accordion').forEach(typeBlock=>{
@@ -56,7 +56,21 @@
       });
     });
   }
-
-  window.refreshApartmentPlans=function(){injectBank();injectBuilder();};
-  setTimeout(()=>{injectBank();injectBuilder();},0);
+  function wrapRenderers(){
+    if(typeof window.renderBank==='function'&&!window.renderBank.__apartmentsWrapped){
+      const original=window.renderBank;
+      const wrapped=function(){const r=original.apply(this,arguments);injectBank();return r;};
+      wrapped.__apartmentsWrapped=true; window.renderBank=wrapped;
+    }
+    if(typeof window.renderBuilderBank==='function'&&!window.renderBuilderBank.__apartmentsWrapped){
+      const original=window.renderBuilderBank;
+      const wrapped=function(){const r=original.apply(this,arguments);injectBuilder();return r;};
+      wrapped.__apartmentsWrapped=true; window.renderBuilderBank=wrapped;
+    }
+  }
+  window.refreshApartmentPlans=function(){wrapRenderers();injectBank();injectBuilder();};
+  wrapRenderers();
+  setTimeout(window.refreshApartmentPlans,0);
+  setTimeout(window.refreshApartmentPlans,200);
+  setTimeout(window.refreshApartmentPlans,800);
 })();
