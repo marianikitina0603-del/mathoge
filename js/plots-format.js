@@ -1,7 +1,11 @@
-// Таблицы и ответы для практических заданий «Участки».
+// Таблицы, ответы и изображения для практических заданий «Участки».
 (function(){
   const answers={"1.4":"7425","2.4":"7","3.4":"36","4.4":"29","5.4":"500","1.4.1":"3517","2.4.1":"9","3.4.1":"6","4.4.1":"10","5.4.1":"600","1.4.2":"7352","2.4.2":"5","3.4.2":"36","4.4.2":"75","5.4.2":"450","1.4.3":"2473","2.4.3":"7","3.4.3":"108","4.4.3":"300","5.4.3":"500","1.4.4":"3461","2.4.4":"23","3.4.4":"68","4.4.4":"10","5.4.4":"500","1.4.5":"5136","2.4.5":"6","3.4.5":"72","4.4.5":"10","5.4.5":"650","1.4.6":"4235","2.4.6":"32","3.4.6":"31","4.4.6":"4","5.4.6":"400","1.4.7":"5723","2.4.7":"88","3.4.7":"26","4.4.7":"10","5.4.7":"200"};
-  tasks.filter(t=>t.practicalType==='plots').forEach(t=>{if(answers[t.id]!==undefined)t.answer=answers[t.id];});
+  const planPath=setNo=>`assets/plots-data/plot-plan-${String(setNo).padStart(2,'0')}.png`;
+  tasks.filter(t=>t.practicalType==='plots').forEach(t=>{
+    if(answers[t.id]!==undefined)t.answer=answers[t.id];
+    t.planImage=planPath(t.set);
+  });
 
   const base=window.formatPracticalText;
   window.formatPracticalText=function(t){
@@ -20,4 +24,50 @@
     }
     return typeof base==='function'?base(t):(t?.text||'');
   };
+
+  function imageBlock(setNo,clsPrefix){
+    return `<div class="${clsPrefix}-route-plan-wrap"><div class="${clsPrefix}-route-plan-label">План к заданиям 1–5</div><img class="${clsPrefix}-route-plan" src="${planPath(setNo)}" alt="План. Участки, комплект ${setNo}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="${clsPrefix==='builder'?'builder-plan-missing':'route-plan-missing'}" style="display:none">Изображение плана отсутствует.</div></div>`;
+  }
+
+  function injectBankPlans(){
+    document.querySelectorAll('#taskList .practical-type-accordion').forEach(typeBlock=>{
+      const title=typeBlock.querySelector(':scope > summary strong')?.textContent?.trim();
+      if(title!=='Участки')return;
+      typeBlock.querySelectorAll('.practical-set-accordion').forEach(setBlock=>{
+        const m=setBlock.querySelector(':scope > summary strong')?.textContent?.match(/Комплект\s+(\d+)/);
+        const setNo=m?Number(m[1]):0;if(!setNo)return;
+        const grid=setBlock.querySelector('.practical-context-grid');
+        if(grid&&!grid.querySelector('img[src*="plots-data"]'))grid.insertAdjacentHTML('beforeend',imageBlock(setNo,'route'));
+      });
+    });
+  }
+
+  function injectBuilderPlans(){
+    document.querySelectorAll('#builderBankList .prototype-accordion').forEach(typeBlock=>{
+      const title=typeBlock.querySelector(':scope > summary strong')?.textContent?.trim();
+      if(title!=='Участки')return;
+      typeBlock.querySelectorAll('.analogs-accordion').forEach(setBlock=>{
+        const m=setBlock.querySelector(':scope > summary strong')?.textContent?.match(/Комплект\s+(\d+)/);
+        const setNo=m?Number(m[1]):0;if(!setNo)return;
+        const grid=setBlock.querySelector('.builder-practical-context-grid');
+        if(grid&&!grid.querySelector('img[src*="plots-data"]'))grid.insertAdjacentHTML('beforeend',imageBlock(setNo,'builder'));
+      });
+    });
+  }
+
+  const originalRenderBank=window.renderBank;
+  if(typeof originalRenderBank==='function'){
+    window.renderBank=function(){originalRenderBank();injectBankPlans();};
+  }
+
+  setTimeout(()=>{
+    injectBankPlans();
+    const originalRenderBuilderBank=window.renderBuilderBank;
+    if(typeof originalRenderBuilderBank==='function'&&!originalRenderBuilderBank.__plotsWrapped){
+      const wrapped=function(){originalRenderBuilderBank();injectBuilderPlans();};
+      wrapped.__plotsWrapped=true;
+      window.renderBuilderBank=wrapped;
+    }
+    injectBuilderPlans();
+  },0);
 })();
