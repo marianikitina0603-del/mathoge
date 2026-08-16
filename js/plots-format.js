@@ -17,9 +17,10 @@
   (async()=>{try{
     await load('js/apartments-data.js?v=20260816-1810');
     await load('js/apartments-format.js?v=20260816-1810');
+    await load('js/empty-bank-structure.js?v=20260816-1915');
     if(typeof window.renderBank==='function')window.renderBank();
     if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();
     if(typeof window.refreshApartmentPlans==='function')window.refreshApartmentPlans();
     if(typeof window.updateCounters==='function')window.updateCounters();
-  }catch(e){console.error('Не удалось загрузить комплекты Квартиры',e);}})();
+  }catch(e){console.error('Не удалось загрузить дополнительные разделы банка',e);}})();
 })();
