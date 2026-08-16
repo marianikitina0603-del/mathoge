@@ -12,9 +12,11 @@
   #builderBankList .builder-task-row .add-button{min-width:104px}
   #builderBankList .builder-practical-content{padding:12px;border-top:1px solid var(--line);display:grid;gap:12px}
   #builderBankList .builder-practical-context{padding:16px;border:1px solid var(--line);border-radius:13px;background:#f8faff;line-height:1.65}
-  #builderBankList .builder-practical-context-title{font-size:11px;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
-  #builderBankList .builder-route-plan{display:block;max-width:100%;width:auto;max-height:440px;object-fit:contain;margin:14px auto 2px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px}
-  #builderBankList .builder-route-plan-wrap{margin-top:12px}
+  #builderBankList .builder-practical-context-title{font-size:11px;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px}
+  #builderBankList .builder-practical-context-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,40%);gap:20px;align-items:start}
+  #builderBankList .builder-practical-context-copy{min-width:0}
+  #builderBankList .builder-route-plan{display:block;max-width:100%;width:100%;height:auto;max-height:440px;object-fit:contain;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px}
+  #builderBankList .builder-route-plan-wrap{margin:0}
   #builderBankList .builder-route-plan-label{font-size:11px;font-weight:800;color:var(--muted);margin-bottom:6px}
   #builderBankList .builder-plan-missing{padding:12px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:12px;background:#fff}
   #builderBankList .builder-practical-tasks{display:grid;gap:10px}
@@ -30,12 +32,15 @@
   .random-home-card h3{margin:0}
   .random-home-card p{margin:0 0 4px;line-height:1.6}
   .random-home-card .primary-button{margin-top:auto;width:100%}
+  @media(max-width:850px){
+    #builderBankList .builder-practical-context-grid{grid-template-columns:1fr}
+    #builderBankList .builder-route-plan{width:auto;max-width:100%}
+  }
   @media(max-width:720px){
     #builderBankList .builder-task-row,#builderBankList .builder-analog-row{grid-template-columns:1fr}
     #builderBankList .builder-task-row .add-button,#builderBankList .builder-analog-row .add-button{width:100%}
     #builderBankList .builder-set-summary{flex-wrap:wrap}
     #builderBankList .builder-set-summary .set-add-button{width:100%;margin-left:36px}
-    #builderBankList .builder-route-plan{max-height:none;width:100%}
   }`;
   document.head.appendChild(style);
 
@@ -48,7 +53,7 @@
     const context=setTasks.find(t=>t.context)?.context||'';
     if(!context && type.key!=='routes') return '';
     const plan=type.key==='routes' ? `<div class="builder-route-plan-wrap"><div class="builder-route-plan-label">План к заданиям 1–5</div><img class="builder-route-plan" src="${routePlanSource(setNo)}" alt="План. Маршруты, комплект ${setNo}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="builder-plan-missing" style="display:none">Изображение плана отсутствует в папке assets/routes-data.</div></div>` : '';
-    return `<div class="builder-practical-context"><div class="builder-practical-context-title">Общее условие к заданиям 1–5</div>${context}${plan}</div>`;
+    return `<div class="builder-practical-context"><div class="builder-practical-context-title">Общее условие к заданиям 1–5</div><div class="builder-practical-context-grid"><div class="builder-practical-context-copy">${context}</div>${plan}</div></div>`;
   }
 
   function builderPracticalStructure(){
