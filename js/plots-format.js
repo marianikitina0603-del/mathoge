@@ -26,6 +26,8 @@
     await load('js/number8-fractions.js?v=20260828-2049');
     await load('js/number9-data.js?v=20260828-n9-1');
     await load('js/number9-analogs.js?v=20260828-n9-1');
+    await load('js/number10-data.js?v=20260829-n10-1');
+    await load('js/number10-analogs.js?v=20260829-n10-1');
     await load('js/empty-numbers.js?v=20260828-2125');
     if(typeof window.hydrateVariant==='function')window.hydrateVariant();
     if(typeof window.renderBank==='function')window.renderBank(); if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();
