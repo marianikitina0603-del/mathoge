@@ -7,15 +7,21 @@
       .replace(/−/g,'-')
       .replace(/·/g,'\\cdot ')
       .replace(/:/g,'\\div ')
-      .replace(/²/g,'^{2}').replace(/³/g,'^{3}')
-      .replace(/⁴/g,'^{4}').replace(/⁵/g,'^{5}').replace(/⁶/g,'^{6}')
-      .replace(/⁷/g,'^{7}').replace(/⁸/g,'^{8}').replace(/⁹/g,'^{9}')
+      // Весь надстрочный показатель — одна степень: ¹⁰ → ^{10}, а не отдельные цифры.
+      .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]+/g,p=>`^{${Array.from(p,c=>'0123456789-+'['⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺'.indexOf(c)]).join('')}}`)
       .replace(/\s+/g,' ')
       .trim();
   }
   function matchingParen(s,start){let d=0;for(let i=start;i<s.length;i++){if(s[i]==='(')d++;else if(s[i]===')'){d--;if(d===0)return i;}}return -1;}
   function roots(s){let out='';for(let i=0;i<s.length;){if(s[i]!=='√'){out+=s[i++];continue;}if(s[i+1]==='('){const e=matchingParen(s,i+1);if(e>i){out+='\\sqrt{'+roots(s.slice(i+2,e))+'}';i=e+1;continue;}}let j=i+1;while(j<s.length&&/[A-Za-zА-Яа-я0-9.,]/.test(s[j]))j++;if(s[j]==='^'&&s[j+1]==='{'){const e=s.indexOf('}',j+2);if(e>=0)j=e+1;}out+='\\sqrt{'+s.slice(i+1,j)+'}';i=j;}return out;}
-  const frac=(a,b)=>`\\frac{${a.trim()}}{${b.trim()}}`;
+  function fractionPart(s){
+    s=s.trim();
+    // Убираем только скобки, охватывающие аргумент дроби ЦЕЛИКОМ.
+    // (a^3)^4 и (-a)^4 не проходят это условие: степень стоит после скобок.
+    while(s[0]==='('&&matchingParen(s,0)===s.length-1)s=s.slice(1,-1).trim();
+    return s;
+  }
+  const frac=(a,b)=>`\\frac{${fractionPart(a)}}{${fractionPart(b)}}`;
 
   function splitTopLevelSlash(s){
     let round=0,curly=0;
@@ -73,9 +79,12 @@
     s=roots(s);
     s=fractionInsideRoot(s,prototype);
     s=fractions(s);
+    // В 8.31 скобки вокруг положительной числовой дроби служат лишь для записи
+    // коэффициента через '/'. Дробь как основание степени оставляем в скобках.
+    if(Number(prototype)===31)s=s.replace(/\(\\frac\{(\d+)\}\{(\d+)\}\)(?!\s*\^)/g,(_,a,b)=>frac(a,b));
     return s;
   }
-  function hasMath(t){const s=String(t.text||'');return s.includes('√')||s.includes('<sup>')||/[²³⁴⁵⁶⁷⁸⁹]/.test(s);}
+  function hasMath(t){const s=String(t.text||'');return s.includes('√')||s.includes('<sup>')||/[⁰¹²³⁴⁵⁶⁷⁸⁹]/.test(s);}
   tasks.filter(t=>t.number===8&&hasMath(t)).forEach(t=>{
     let text=String(t.text||'');const prefix='Найдите значение выражения ';let body=text.startsWith(prefix)?text.slice(prefix.length):text;if(body.endsWith('.'))body=body.slice(0,-1);
     const m=body.match(/^(.*?)(\s+при\s+.+)$/i);const expr=m?m[1]:body;let tail=m?m[2]:'';
