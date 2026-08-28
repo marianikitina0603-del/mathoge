@@ -1,4 +1,5 @@
 // Дополнительный режим печати: только задания, две уменьшенные страницы на одном A4 landscape.
+// Build refresh: 2026-08-28 19:50
 (function(){
   const btn=document.getElementById('printTasksTwoUp');
   if(!btn)return;
