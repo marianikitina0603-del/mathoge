@@ -1,4 +1,4 @@
-// №8: все задания, содержащие корни, переводятся в LaTeX/MathJax.
+// №8: все математические выражения со степенями и корнями переводятся в LaTeX/MathJax.
 (function(){
   function stripHtml(s){
     return String(s)
@@ -6,6 +6,7 @@
       .replace(/<[^>]+>/g,'')
       .replace(/−/g,'-')
       .replace(/·/g,'\\cdot ')
+      .replace(/:/g,'\\div ')
       .replace(/\s+/g,' ')
       .trim();
   }
@@ -21,10 +22,35 @@
     s=s.replace(/([A-Za-z0-9]+(?:\^\{[^}]+\})?|\\sqrt\{[^}]+\})\s*\/\s*([A-Za-z0-9]+(?:\^\{[^}]+\})?|\\sqrt\{[^}]+\})/g,(_,a,b)=>frac(a,b));
     return s;
   }
-  function toTex(raw){let s=stripHtml(raw);s=roots(s);s=fractions(s);return s.replace(/²/g,'^{2}').replace(/³/g,'^{3}');}
-  tasks.filter(t=>t.number===8&&String(t.text||'').includes('√')).forEach(t=>{let text=String(t.text||'');const prefix='Найдите значение выражения ';let body=text.startsWith(prefix)?text.slice(prefix.length):text;if(body.endsWith('.'))body=body.slice(0,-1);const m=body.match(/^(.*?)(\s+при\s+.+)$/i);const expr=m?m[1]:body,tail=m?m[2]:'';t.text=`${prefix}\\(${toTex(expr)}\\)${tail}.`;t.latexMath=true;});
+  function toTex(raw){
+    let s=stripHtml(raw);
+    s=roots(s);
+    s=fractions(s);
+    s=s.replace(/²/g,'^{2}').replace(/³/g,'^{3}');
+    // Десятичная запятая остаётся запятой, отрицательные показатели уже имеют вид ^{-n}.
+    return s;
+  }
+  function hasMath(t){
+    const s=String(t.text||'');
+    return s.includes('√')||s.includes('<sup>')||/[²³]/.test(s);
+  }
+  tasks.filter(t=>t.number===8&&hasMath(t)).forEach(t=>{
+    let text=String(t.text||'');
+    const prefix='Найдите значение выражения ';
+    let body=text.startsWith(prefix)?text.slice(prefix.length):text;
+    if(body.endsWith('.'))body=body.slice(0,-1);
+    const m=body.match(/^(.*?)(\s+при\s+.+)$/i);
+    const expr=m?m[1]:body;
+    let tail=m?m[2]:'';
+    // Условие «при a=..., b=...» тоже оформляем математически.
+    if(tail){
+      const cond=tail.replace(/^\s+при\s+/i,'');
+      tail=` при \\(${toTex(cond)}\\)`;
+    }
+    t.text=`${prefix}\\(${toTex(expr)}\\)${tail}.`;
+    t.latexMath=true;
+  });
 
-  // MathJax должен обрабатывать формулы после каждого динамического renderBank/renderBuilderBank.
   let queued=false;
   window.typesetMathOGE=function(root=document){
     if(queued)return; queued=true;
