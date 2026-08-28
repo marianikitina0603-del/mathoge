@@ -11,28 +11,16 @@
   function injectBuilderPlans(){document.querySelectorAll('#builderBankList .prototype-accordion').forEach(typeBlock=>{if(typeBlock.querySelector(':scope > summary strong')?.textContent?.trim()!=='Участки')return;typeBlock.querySelectorAll('.analogs-accordion').forEach(setBlock=>{const m=setBlock.querySelector(':scope > summary strong')?.textContent?.match(/Комплект\s+(\d+)/);const setNo=m?Number(m[1]):0;const grid=setBlock.querySelector('.builder-practical-context-grid');if(setNo&&grid&&!grid.querySelector('img[src*="plots-data"]'))grid.insertAdjacentHTML('beforeend',builderImageBlock(setNo));});});}
   const originalRenderBank=window.renderBank;if(typeof originalRenderBank==='function')window.renderBank=function(){originalRenderBank();injectBankPlans();};
   setTimeout(()=>{injectBankPlans();const originalRenderBuilderBank=window.renderBuilderBank;if(typeof originalRenderBuilderBank==='function'&&!originalRenderBuilderBank.__plotsWrapped){const wrapped=function(){originalRenderBuilderBank();injectBuilderPlans();};wrapped.__plotsWrapped=true;window.renderBuilderBank=wrapped;}injectBuilderPlans();},0);
-
-  // Подгружаем остальные практические разделы и пустые номера, затем перерисовываем оба банка.
   const load=(src)=>new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.body.appendChild(s);});
   (async()=>{try{
-    await load('js/apartments-data.js?v=20260828-1728');
-    await load('js/apartments-format.js?v=20260828-1728');
-    await load('js/sheets-data.js?v=20260828-1740');
-    await load('js/sheets-format.js?v=20260828-1740');
-    await load('js/stoves-data.js?v=20260828-1815');
-    await load('js/stoves-format.js?v=20260828-1815');
-    await load('js/tariffs-data.js?v=20260828-1835');
-    await load('js/tariffs-format.js?v=20260828-1835');
-    await load('js/tires-data.js?v=20260828-1855');
-    await load('js/tires-format.js?v=20260828-1855');
-    await load('js/empty-numbers.js?v=20260828-1728');
-    if(typeof window.renderBank==='function')window.renderBank();
-    if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();
-    if(typeof window.refreshApartmentPlans==='function')window.refreshApartmentPlans();
-    if(typeof window.refreshSheetPlans==='function')window.refreshSheetPlans();
-    if(typeof window.refreshStoveTasks==='function')window.refreshStoveTasks();
-    if(typeof window.refreshTariffPlans==='function')window.refreshTariffPlans();
-    if(typeof window.refreshTirePlans==='function')window.refreshTirePlans();
-    if(typeof window.updateCounters==='function')window.updateCounters();
+    await load('js/apartments-data.js?v=20260828-1728'); await load('js/apartments-format.js?v=20260828-1728');
+    await load('js/sheets-data.js?v=20260828-1740'); await load('js/sheets-format.js?v=20260828-1740');
+    await load('js/stoves-data.js?v=20260828-1815'); await load('js/stoves-format.js?v=20260828-1815');
+    await load('js/tariffs-data.js?v=20260828-1835'); await load('js/tariffs-format.js?v=20260828-1835');
+    await load('js/tires-data.js?v=20260828-1855'); await load('js/tires-format.js?v=20260828-1855');
+    await load('js/number7-data.js?v=20260828-2030');
+    await load('js/empty-numbers.js?v=20260828-2030');
+    if(typeof window.renderBank==='function')window.renderBank(); if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();
+    if(typeof window.refreshApartmentPlans==='function')window.refreshApartmentPlans(); if(typeof window.refreshSheetPlans==='function')window.refreshSheetPlans(); if(typeof window.refreshStoveTasks==='function')window.refreshStoveTasks(); if(typeof window.refreshTariffPlans==='function')window.refreshTariffPlans(); if(typeof window.refreshTirePlans==='function')window.refreshTirePlans(); if(typeof window.updateCounters==='function')window.updateCounters();
   }catch(e){console.error('Не удалось загрузить дополнительные разделы банка',e);}})();
 })();
