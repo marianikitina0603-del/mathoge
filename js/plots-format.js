@@ -19,6 +19,7 @@
     await load('js/tariffs-data.js?v=20260828-1835'); await load('js/tariffs-format.js?v=20260828-1835');
     await load('js/tires-data.js?v=20260828-1855'); await load('js/tires-format.js?v=20260828-1855');
     await load('js/number7-data.js?v=20260828-2030');
+    await load('js/number7-title.js?v=20260828-1940');
     await load('js/empty-numbers.js?v=20260828-2030');
     if(typeof window.renderBank==='function')window.renderBank(); if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();
     if(typeof window.refreshApartmentPlans==='function')window.refreshApartmentPlans(); if(typeof window.refreshSheetPlans==='function')window.refreshSheetPlans(); if(typeof window.refreshStoveTasks==='function')window.refreshStoveTasks(); if(typeof window.refreshTariffPlans==='function')window.refreshTariffPlans(); if(typeof window.refreshTirePlans==='function')window.refreshTirePlans(); if(typeof window.updateCounters==='function')window.updateCounters();
