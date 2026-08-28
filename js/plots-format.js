@@ -23,6 +23,8 @@
     await load('js/stoves-format.js?v=20260828-1815');
     await load('js/tariffs-data.js?v=20260828-1835');
     await load('js/tariffs-format.js?v=20260828-1835');
+    await load('js/tires-data.js?v=20260828-1855');
+    await load('js/tires-format.js?v=20260828-1855');
     await load('js/empty-numbers.js?v=20260828-1728');
     if(typeof window.renderBank==='function')window.renderBank();
     if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();
@@ -30,6 +32,7 @@
     if(typeof window.refreshSheetPlans==='function')window.refreshSheetPlans();
     if(typeof window.refreshStoveTasks==='function')window.refreshStoveTasks();
     if(typeof window.refreshTariffPlans==='function')window.refreshTariffPlans();
+    if(typeof window.refreshTirePlans==='function')window.refreshTirePlans();
     if(typeof window.updateCounters==='function')window.updateCounters();
   }catch(e){console.error('Не удалось загрузить дополнительные разделы банка',e);}})();
 })();
