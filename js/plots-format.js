@@ -22,7 +22,7 @@
     await load('js/number7-title.js?v=20260828-1940');
     await load('js/number8-data.js?v=20260828-2045');
     await load('js/number8-analogs.js?v=20260828-2115');
-    await load('js/number8-latex.js?v=20260828-2125');
+    await load('js/number8-latex.js?v=20260828-n8-parens-1');
     await load('js/number8-fractions.js?v=20260828-2049');
     await load('js/empty-numbers.js?v=20260828-2125');
     if(typeof window.renderBank==='function')window.renderBank(); if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();
