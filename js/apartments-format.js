@@ -2,7 +2,13 @@
 (function(){
   const answers={"1.7":"2346","2.7":"3,2","3.7":"12","4.7":"680","5.7":"29 700","1.7.1":"2347","2.7.1":"4,8","3.7.1":"32","4.7.1":"200","5.7.1":"28 800","1.7.2":"2341","2.7.2":"20","3.7.2":"2","4.7.2":"125","5.7.2":"1000","1.7.3":"2316","2.7.3":"4,8","3.7.3":"9","4.7.3":"200","5.7.3":"28 800","1.7.4":"2476","2.7.4":"7,04","3.7.4":"11","4.7.4":"50","5.7.4":"29 300","1.7.5":"2376","2.7.5":"15,84","3.7.5":"7","4.7.5":"50","5.7.5":"820","1.7.6":"2146","2.7.6":"24,96","3.7.6":"8","4.7.6":"525","5.7.6":"820","1.7.7":"1346","2.7.7":"14,4","3.7.7":"3","4.7.7":"350","5.7.7":"950"};
   const planPath=setNo=>`assets/apartments-data/apartment-plan-${String(setNo).padStart(2,'0')}.png`;
-  tasks.filter(t=>t.practicalType==='apartments').forEach(t=>{if(answers[t.id]!==undefined)t.answer=answers[t.id];t.planImage=planPath(t.set);});
+  function applyApartmentData(){
+    tasks.filter(t=>t.practicalType==='apartments').forEach(t=>{
+      if(answers[t.id]!==undefined)t.answer=answers[t.id];
+      t.planImage=planPath(t.set);
+    });
+  }
+  applyApartmentData();
 
   const style=document.createElement('style');
   style.id='mathoge-print-table-fix';
@@ -54,9 +60,65 @@
     const cls=mode==='builder'?'builder-route-plan':'route-plan-image';
     const wrap=mode==='builder'?'builder-route-plan-wrap':'route-plan-wrap';
     const label=mode==='builder'?'builder-route-plan-label':'route-plan-label';
-    return `<div class="${wrap}"><div class="${label}">План к заданиям 1–5</div><img class="${cls}" src="${planPath(setNo)}" alt="План квартиры, комплект ${setNo}" loading="lazy"></div>`;
+    const missing=mode==='builder'?'builder-plan-missing':'route-plan-missing';
+    return `<div class="${wrap}"><div class="${label}">План к заданиям 1–5</div><img class="${cls}" src="${planPath(setNo)}" alt="План квартиры, комплект ${setNo}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="${missing}" style="display:none">Изображение плана не найдено.</div></div>`;
   }
-  function injectBank(){document.querySelectorAll('#taskList .practical-type-accordion').forEach(typeBlock=>{if(typeBlock.querySelector(':scope > summary strong')?.textContent?.trim()!=='Квартиры')return;typeBlock.querySelectorAll('.practical-set-accordion').forEach(setBlock=>{const m=setBlock.querySelector(':scope > summary strong')?.textContent?.match(/Комплект\s+(\d+)/);const setNo=m?Number(m[1]):0;const grid=setBlock.querySelector('.practical-context-grid');if(setNo&&grid&&!grid.querySelector('img[src*="apartments-data"]'))grid.insertAdjacentHTML('beforeend',imageBlock(setNo,'bank'));});});}
-  function injectBuilder(){document.querySelectorAll('#builderBankList .prototype-accordion').forEach(typeBlock=>{if(typeBlock.querySelector(':scope > summary strong')?.textContent?.trim()!=='Квартиры')return;typeBlock.querySelectorAll('.analogs-accordion').forEach(setBlock=>{const m=setBlock.querySelector(':scope > summary strong')?.textContent?.match(/Комплект\s+(\d+)/);const setNo=m?Number(m[1]):0;const grid=setBlock.querySelector('.builder-practical-context-grid');if(setNo&&grid&&!grid.querySelector('img[src*="apartments-data"]'))grid.insertAdjacentHTML('beforeend',imageBlock(setNo,'builder'));});});}
-  setTimeout(()=>{injectBank();injectBuilder();},0);
+
+  function injectBank(){
+    document.querySelectorAll('#taskList .practical-type-accordion').forEach(typeBlock=>{
+      if(typeBlock.querySelector(':scope > summary strong')?.textContent?.trim()!=='Квартиры')return;
+      typeBlock.querySelectorAll('.practical-set-accordion').forEach(setBlock=>{
+        const m=setBlock.querySelector(':scope > summary strong')?.textContent?.match(/Комплект\s+(\d+)/);
+        const setNo=m?Number(m[1]):0;
+        const grid=setBlock.querySelector('.practical-context-grid');
+        if(setNo&&grid&&!grid.querySelector('img[src*="apartments-data"]'))grid.insertAdjacentHTML('beforeend',imageBlock(setNo,'bank'));
+      });
+    });
+  }
+
+  function injectBuilder(){
+    document.querySelectorAll('#builderBankList .prototype-accordion').forEach(typeBlock=>{
+      if(typeBlock.querySelector(':scope > summary strong')?.textContent?.trim()!=='Квартиры')return;
+      typeBlock.querySelectorAll('.analogs-accordion').forEach(setBlock=>{
+        const m=setBlock.querySelector(':scope > summary strong')?.textContent?.match(/Комплект\s+(\d+)/);
+        const setNo=m?Number(m[1]):0;
+        const grid=setBlock.querySelector('.builder-practical-context-grid');
+        if(setNo&&grid&&!grid.querySelector('img[src*="apartments-data"]'))grid.insertAdjacentHTML('beforeend',imageBlock(setNo,'builder'));
+      });
+    });
+  }
+
+  function refreshApartmentPlans(){applyApartmentData();injectBank();injectBuilder();}
+  window.refreshApartmentPlans=refreshApartmentPlans;
+
+  // Восстанавливаем планы после каждой перерисовки банка.
+  const bankRender=window.renderBank;
+  if(typeof bankRender==='function'&&!bankRender.__apartmentsWrapped){
+    const wrappedBank=function(){const r=bankRender.apply(this,arguments);queueMicrotask(refreshApartmentPlans);return r;};
+    wrappedBank.__apartmentsWrapped=true;
+    window.renderBank=wrappedBank;
+  }
+
+  function wrapBuilderWhenReady(){
+    const builderRender=window.renderBuilderBank;
+    if(typeof builderRender==='function'&&!builderRender.__apartmentsWrapped){
+      const wrappedBuilder=function(){const r=builderRender.apply(this,arguments);queueMicrotask(refreshApartmentPlans);return r;};
+      wrappedBuilder.__apartmentsWrapped=true;
+      window.renderBuilderBank=wrappedBuilder;
+    }
+  }
+  wrapBuilderWhenReady();
+
+  // Дополнительная защита от динамических перерисовок другими скриптами.
+  let scheduled=false;
+  const observer=new MutationObserver(()=>{
+    if(scheduled)return;
+    scheduled=true;
+    requestAnimationFrame(()=>{scheduled=false;refreshApartmentPlans();wrapBuilderWhenReady();});
+  });
+  const roots=[document.getElementById('taskList'),document.getElementById('builderBankList')].filter(Boolean);
+  roots.forEach(root=>observer.observe(root,{childList:true,subtree:true}));
+
+  setTimeout(()=>{wrapBuilderWhenReady();refreshApartmentPlans();},0);
+  setTimeout(()=>{wrapBuilderWhenReady();refreshApartmentPlans();},300);
 })();
