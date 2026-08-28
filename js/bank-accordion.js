@@ -72,7 +72,7 @@ function formatPracticalText(t){if(t.number===1)return formatTask1Table(t.text);
 window.formatPracticalText=formatPracticalText;
 
 const standardTaskCard=taskCard;
-taskCard=function(t){if(!(t.number>=1&&t.number<=5))return standardTaskCard(t);return `<article class="task-card"><div><div class="task-meta"><span class="tag number">№${t.number}</span><span class="tag">${t.kind}</span></div><p class="task-math">${formatPracticalText(t)}</p></div></article>`;};
+taskCard=function(t){if(!(t.number>=1&&t.number<=5))return standardTaskCard(t);return `<article class="task-card"><div><div class="task-meta"><span class="tag number">№${t.number}</span></div><p class="task-math">${formatPracticalText(t)}</p></div></article>`;};
 
 function isPracticalSetAdded(setTasks){return setTasks.length>0&&setTasks.every(t=>isAdded(t.id));}
 function togglePracticalSet(typeKey,setNo){const setTasks=tasks.filter(t=>t.number>=1&&t.number<=5&&t.practicalType===typeKey&&t.set===setNo).sort((a,b)=>a.number-b.number);if(!setTasks.length)return;const allAdded=isPracticalSetAdded(setTasks);if(allAdded){const ids=new Set(setTasks.map(t=>t.id));variant=variant.filter(t=>!ids.has(t.id));toast(`Комплект ${setNo} удалён из варианта`);}else{const existing=new Set(variant.map(t=>t.id));setTasks.forEach(t=>{if(!existing.has(t.id))variant.push(t)});toast(`Комплект ${setNo} добавлен в вариант`);}saveCurrent();renderBank();}
