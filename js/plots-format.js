@@ -19,8 +19,8 @@
     await load('js/apartments-format.js?v=20260828-1728');
     await load('js/sheets-data.js?v=20260828-1740');
     await load('js/sheets-format.js?v=20260828-1740');
-    await load('js/stoves-data.js?v=20260828-1800');
-    await load('js/stoves-format.js?v=20260828-1800');
+    await load('js/stoves-data.js?v=20260828-1815');
+    await load('js/stoves-format.js?v=20260828-1815');
     await load('js/empty-numbers.js?v=20260828-1728');
     if(typeof window.renderBank==='function')window.renderBank();
     if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();
