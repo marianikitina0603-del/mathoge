@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 520" role="img" aria-labelledby="title desc">
+<title id="title">Схема кожуха печи</title><desc id="desc">Ширина кожуха 50 сантиметров, высота до начала арки 60 сантиметров, радиус арки R проведён из середины нижней стороны.</desc>
+<defs><pattern id="hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="10" stroke="#9aa0a8" stroke-width="2"/></pattern><marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#333"/></marker></defs>
+<rect width="620" height="520" fill="white"/>
+<!-- кожух -->
+<path d="M150 380 L150 220 A162.5 162.5 0 0 1 400 220 L400 380 Z" fill="url(#hatch)" stroke="#111" stroke-width="4"/>
+<!-- верхняя часть корпуса -->
+<path d="M150 220 L150 75 L400 75 L400 220" fill="none" stroke="#111" stroke-width="4"/>
+<!-- дверца топки -->
+<rect x="235" y="285" width="80" height="95" fill="white" stroke="#111" stroke-width="4"/>
+<text x="430" y="325" font-family="Arial, sans-serif" font-size="22">дверца топки</text><line x1="423" y1="318" x2="317" y2="318" stroke="#444" stroke-width="2"/>
+<text x="430" y="195" font-family="Arial, sans-serif" font-size="22">арка кожуха</text><line x1="423" y1="190" x2="365" y2="207" stroke="#444" stroke-width="2"/>
+<!-- радиус -->
+<circle cx="275" cy="380" r="5" fill="#111"/><line x1="275" y1="380" x2="150" y2="220" stroke="#111" stroke-width="3"/><text x="205" y="305" font-family="Georgia, serif" font-style="italic" font-size="28">R</text>
+<!-- размер 60 -->
+<line x1="118" y1="380" x2="118" y2="220" stroke="#333" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/><line x1="130" y1="380" x2="105" y2="380" stroke="#333" stroke-width="2"/><line x1="130" y1="220" x2="105" y2="220" stroke="#333" stroke-width="2"/><text x="72" y="308" font-family="Arial, sans-serif" font-size="22">60</text>
+<!-- размер 50 -->
+<line x1="150" y1="420" x2="400" y2="420" stroke="#333" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/><line x1="150" y1="390" x2="150" y2="435" stroke="#333" stroke-width="2"/><line x1="400" y1="390" x2="400" y2="435" stroke="#333" stroke-width="2"/><text x="263" y="457" font-family="Arial, sans-serif" font-size="22">50</text>
+</svg>
