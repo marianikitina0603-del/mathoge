@@ -1,5 +1,20 @@
 // Дополнительные режимы печати: клетка для решения и 2 страницы заданий на листе.
 (function(){
+  async function preparePrintMath(root){
+    if(!root||(!root.textContent.includes('\\(')&&!root.querySelector('mjx-container')))return;
+    // Даём запланированному typeset после renderPreview начать обработку.
+    await new Promise(resolve=>requestAnimationFrame(resolve));
+    const mj=window.MathJax;
+    if(mj&&mj.startup&&mj.startup.promise)await mj.startup.promise;
+    if(!mj||typeof mj.typesetPromise!=='function')throw new Error('MathJax ещё не загружен');
+    await mj.typesetPromise([root]);
+    if(root.querySelector('[data-mml-node="merror"],mjx-merror'))throw new Error('Ошибка математической формулы');
+  }
+  function printError(err){
+    console.error('Не удалось подготовить формулы к печати',err);
+    if(typeof toast==='function')toast('Формулы ещё не готовы к печати. Дождитесь загрузки MathJax и повторите.');
+  }
+
   function addPrintableGridFix(){
     const style=document.createElement('style');
     style.textContent=`
@@ -36,10 +51,14 @@
   function setupTwoUp(){
     const btn=document.getElementById('printTasksTwoUp');
     if(!btn)return;
-    btn.addEventListener('click',()=>{
+    btn.addEventListener('click',async()=>{
+      if(btn.disabled)return;
+      btn.disabled=true;
+      try{
       if(typeof window.renderPreview==='function')window.renderPreview();
       const source=document.getElementById('examPaper');
       if(!source)return;
+      await preparePrintMath(source);
       const clone=source.cloneNode(true);
       clone.querySelectorAll('.teacher-answer-page,.solution-grid,.solution-grid-svg,.solution-grid-answer,.answer-line').forEach(el=>el.remove());
       const content=clone.querySelector('#previewList');
@@ -62,11 +81,23 @@
       document.body.appendChild(iframe);
       const d=iframe.contentDocument;
       const css=`@page{size:A4 landscape;margin:7mm}*{box-sizing:border-box}html,body{margin:0;padding:0;font-family:Arial,sans-serif;color:#111}body{display:grid;grid-template-columns:1fr 1fr;column-gap:8mm;align-items:start}.two-up-page{width:100%;min-width:0;padding:0 2mm 0 0;break-inside:avoid;page-break-inside:avoid}.two-up-page:nth-child(2n){border-left:1px dashed #aaa;padding-left:6mm;padding-right:0}.two-up-page:nth-child(2n+1):not(:first-child){break-before:page;page-break-before:always}.exam-head{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #aaa;padding-bottom:4px;margin-bottom:6px}.exam-kicker{font-size:6.5pt}.exam-head h2{font-size:10pt;margin:1px 0}.exam-meta{font-size:6.5pt}.preview-practical-block{border:0;margin:0 0 5px}.preview-practical-head{font-size:7.2pt;font-weight:bold;padding:2px 0}.preview-practical-context{padding:2px 0 4px}.preview-practical-context-grid{display:grid;grid-template-columns:minmax(0,1fr) 32%;gap:4mm}.preview-practical-context-copy{font-size:6.7pt;line-height:1.18}.preview-plan{padding:2px;border:1px solid #bbb;text-align:center}.preview-plan-title{font-size:5.5pt}.preview-plan img{display:block;max-width:100%;max-height:95px;margin:auto;object-fit:contain}.preview-practical-tasks{padding:0}.preview-task{display:grid;grid-template-columns:15px 1fr;gap:3px;padding:3px 0;border-bottom:1px solid #bbb;break-inside:avoid;page-break-inside:avoid}.preview-task-number{font-size:7pt;font-weight:bold}.preview-task h4{font-size:7pt;margin:0 0 1px}.task-math{font-size:7pt!important;line-height:1.18!important;margin:0!important}.route-data-table,table{width:100%!important;border-collapse:collapse!important;table-layout:fixed!important;font-size:5.8pt!important;margin:2px 0!important}.route-data-table th,.route-data-table td,table th,table td{border:1px solid #555!important;padding:1px 2px!important;font-size:5.8pt!important;line-height:1.05!important;overflow-wrap:anywhere}.preview-table-scroll{overflow:visible}.stove-task-diagram img{max-height:95px!important;width:auto!important;max-width:100%!important}.teacher-answer-page,.solution-grid,.solution-grid-svg,.solution-grid-answer,.answer-line{display:none!important}`;
-      d.open();d.write(`<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Печать заданий</title><style>${css}</style></head><body>${pages.map(p=>p.outerHTML).join('')}</body></html>`);d.close();
+      // SVG-формулы с fontCache:'global' ссылаются на определения в родительском
+      // документе. Переносим их и стили MathJax вместе с готовыми формулами.
+      const mathStyles=document.getElementById('MJX-SVG-styles')?.outerHTML||'';
+      const mathCache=document.getElementById('MJX-SVG-global-cache')?.outerHTML||'';
+      d.open();d.write(`<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Печать заданий</title><style>${css}</style>${mathStyles}</head><body><div style="display:none" aria-hidden="true">${mathCache}</div>${pages.map(p=>p.outerHTML).join('')}</body></html>`);d.close();
       setTimeout(()=>{try{iframe.contentWindow.focus();iframe.contentWindow.print();}finally{setTimeout(()=>iframe.remove(),1200);}},400);
+      }catch(err){printError(err);}finally{btn.disabled=false;}
     });
   }
 
   addPrintableGridFix();
   setupTwoUp();
+  const printButton=document.getElementById('printVariant');
+  if(printButton)printButton.onclick=async()=>{
+    if(printButton.disabled)return;
+    printButton.disabled=true;
+    try{await preparePrintMath(document.getElementById('examPaper'));window.print();}
+    catch(err){printError(err);}finally{printButton.disabled=false;}
+  };
 })();
