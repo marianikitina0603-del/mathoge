@@ -3,11 +3,11 @@
   const F=(a,b)=>`<span class="mfrac"><span>${a}</span><span>${b}</span></span>`;
 
   function splitTopLevelSlash(s){
-    let round=0, angle=0;
+    let round=0, inTag=false;
     for(let i=0;i<s.length;i++){
-      if(s[i]==='<'){ angle++; continue; }
-      if(s[i]==='>'&&angle){ angle--; continue; }
-      if(angle) continue;
+      if(s[i]==='<'){inTag=true;continue;}
+      if(s[i]==='>'&&inTag){inTag=false;continue;}
+      if(inTag) continue;
       if(s[i]==='(') round++;
       else if(s[i]===')') round=Math.max(0,round-1);
       else if(s[i]==='/'&&round===0) return i;
@@ -25,6 +25,23 @@
       }
     }
     return -1;
+  }
+
+  // Для семейств 25–29 дробная черта относится ко всему произведению в числителе.
+  function convertWholeAlgebraFraction(text){
+    const prefix='Найдите значение выражения ';
+    if(!text.startsWith(prefix)) return null;
+    const rest=text.slice(prefix.length);
+    const marker=' при ';
+    const mi=rest.indexOf(marker);
+    if(mi<0) return null;
+    const expr=rest.slice(0,mi).trim();
+    const tail=rest.slice(mi);
+    const slash=splitTopLevelSlash(expr);
+    if(slash<0) return null;
+    const numerator=expr.slice(0,slash).trim();
+    const denominator=expr.slice(slash+1).trim();
+    return `${prefix}${F(numerator,denominator)}${tail}`;
   }
 
   function convertParenFractions(s){
@@ -49,23 +66,20 @@
     s=String(s||'');
     if(!s.includes('/')) return s;
 
-    // Сначала преобразуем дроби внутри скобок, включая сложные знаменатели.
     s=convertParenFractions(s);
-
-    // 1/(...) после обработки скобок: знаменатель может содержать корни и знаки.
     s=s.replace(/\b1\s*\/\s*\(([^()]*)\)/g,(_,b)=>F('1',b));
-
-    // Обычные числовые дроби, в том числе коэффициенты под корнем.
     s=s.replace(/\b(\d+)\s*\/\s*(\d+)\b/g,(_,a,b)=>F(a,b));
-
-    // Деление на скобочное выражение со степенью: 54/(3√2)².
     s=s.replace(/([^\s+−=]+)\s*\/\s*(\([^()]+\)(?:<sup>[^<]+<\/sup>|²)?)/g,(_,a,b)=>F(a,b));
-
-    // Дроби с корнями/степенями: √a·√b/√c, a^m/a^n и аналогичные.
     s=s.replace(/((?:[\w√−]+(?:<sup>[^<]+<\/sup>|[⁰¹²³⁴⁵⁶⁷⁸⁹]+)?)(?:\s*·\s*[\w√−]+(?:<sup>[^<]+<\/sup>|[⁰¹²³⁴⁵⁶⁷⁸⁹]+)?)*)\s*\/\s*([\w√−]+(?:<sup>[^<]+<\/sup>|[⁰¹²³⁴⁵⁶⁷⁸⁹]+)?)/g,(_,a,b)=>F(a,b));
-
     return s;
   }
 
-  tasks.filter(t=>t.number===8).forEach(t=>{t.text=convert(t.text);});
+  tasks.filter(t=>t.number===8).forEach(t=>{
+    // 25–29: числитель должен включать всё произведение, а знаменатель — всё выражение после черты.
+    if(t.prototype>=25 && t.prototype<=29){
+      const whole=convertWholeAlgebraFraction(String(t.text||''));
+      if(whole){t.text=whole;return;}
+    }
+    t.text=convert(t.text);
+  });
 })();
