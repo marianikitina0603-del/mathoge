@@ -12,12 +12,13 @@
   const originalRenderBank=window.renderBank;if(typeof originalRenderBank==='function')window.renderBank=function(){originalRenderBank();injectBankPlans();};
   setTimeout(()=>{injectBankPlans();const originalRenderBuilderBank=window.renderBuilderBank;if(typeof originalRenderBuilderBank==='function'&&!originalRenderBuilderBank.__plotsWrapped){const wrapped=function(){originalRenderBuilderBank();injectBuilderPlans();};wrapped.__plotsWrapped=true;window.renderBuilderBank=wrapped;}injectBuilderPlans();},0);
 
-  // Подгружаем «Квартиры», общий план «Листов» и пустые разделы №7–25, затем перерисовываем оба банка.
+  // Подгружаем «Квартиры», «Листы» и пустые разделы №7–25, затем перерисовываем оба банка.
   const load=(src)=>new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.body.appendChild(s);});
   (async()=>{try{
     await load('js/apartments-data.js?v=20260828-1728');
     await load('js/apartments-format.js?v=20260828-1728');
-    await load('js/sheets-format.js?v=20260828-1730');
+    await load('js/sheets-data.js?v=20260828-1740');
+    await load('js/sheets-format.js?v=20260828-1740');
     await load('js/empty-numbers.js?v=20260828-1728');
     if(typeof window.renderBank==='function')window.renderBank();
     if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();
