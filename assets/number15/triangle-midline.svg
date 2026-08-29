@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-labelledby="title">
+  <title id="title">Треугольник ABC со средней линией MN</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M35 165 L168 28 L288 165 Z M102 96 L228 96"/>
+    <path d="M66 124 l9 9 M130 60 l9 9 M196 61 l9 -9 M256 126 l9 -9" stroke-width="2"/>
+  </g>
+  <g fill="currentColor" font-family="Times New Roman,serif" font-size="18" font-style="italic">
+    <text x="18" y="183">A</text><text x="164" y="21">B</text><text x="290" y="183">C</text><text x="87" y="95">M</text><text x="232" y="95">N</text>
+  </g>
+</svg>

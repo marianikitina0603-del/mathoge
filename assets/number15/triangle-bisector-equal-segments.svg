@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-labelledby="title">
+  <title id="title">Треугольник ABC с биссектрисой AK и равными отрезками AK и CK</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M35 160 L174 31 L286 160 Z M35 160 L232 98"/>
+    <path d="M128 126 l7 11 M255 119 l12 5" stroke-width="2"/>
+    <path d="M62 151 A29 29 0 0 0 58 143 M59 142 A31 31 0 0 0 52 135" stroke-width="1.5"/>
+  </g>
+  <g fill="currentColor" font-family="Times New Roman,serif" font-size="18" font-style="italic">
+    <text x="18" y="179">A</text><text x="170" y="23">B</text><text x="288" y="179">C</text><text x="236" y="96">K</text>
+  </g>
+</svg>

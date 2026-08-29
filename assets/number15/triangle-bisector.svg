@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-labelledby="title">
+  <title id="title">Треугольник ABC с биссектрисой AD</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M38 160 L205 34 L282 160 Z M38 160 L245 102"/>
+    <path d="M67 151 A30 30 0 0 0 62 142 M63 142 A31 31 0 0 0 56 135" stroke-width="1.5"/>
+  </g>
+  <g fill="currentColor" font-family="Times New Roman,serif" font-size="18" font-style="italic">
+    <text x="21" y="179">A</text><text x="201" y="26">B</text><text x="284" y="179">C</text><text x="249" y="101">D</text>
+  </g>
+</svg>

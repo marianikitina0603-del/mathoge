@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-labelledby="title">
+  <title id="title">Остроугольный треугольник ABC с высотой BH</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M35 163 L215 34 L286 163 Z M215 34 V163"/>
+    <path d="M215 148 H230 V163" stroke-width="1.7"/>
+  </g>
+  <g fill="currentColor" font-family="Times New Roman,serif" font-size="18" font-style="italic">
+    <text x="18" y="181">A</text><text x="211" y="26">B</text><text x="288" y="181">C</text><text x="207" y="184">H</text>
+  </g>
+</svg>

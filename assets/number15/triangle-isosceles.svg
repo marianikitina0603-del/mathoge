@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-labelledby="title">
+  <title id="title">Равнобедренный треугольник ABC, AB равно BC</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M42 163 L160 28 L278 163 Z"/>
+    <path d="M94 98 l10 9 M226 107 l10 -9" stroke-width="2"/>
+  </g>
+  <g fill="currentColor" font-family="Times New Roman,serif" font-size="18" font-style="italic">
+    <text x="25" y="181">A</text><text x="155" y="21">B</text><text x="280" y="181">C</text>
+  </g>
+</svg>

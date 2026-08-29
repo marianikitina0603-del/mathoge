@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-labelledby="title">
+  <title id="title">Треугольник ABC с внешним углом при вершине C</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M45 160 L188 36 L238 160 Z M238 160 H294"/>
+    <path d="M257 160 A20 20 0 0 0 244 142" stroke-width="1.6"/>
+  </g>
+  <g fill="currentColor" font-family="Times New Roman,serif" font-size="18" font-style="italic">
+    <text x="29" y="178">A</text><text x="184" y="27">B</text><text x="232" y="181">C</text>
+  </g>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-labelledby="title">
+  <title id="title">Прямоугольный треугольник</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M45 162 L244 162 L244 37 Z"/>
+    <path d="M228 162 V146 H244" stroke-width="1.7"/>
+  </g>
+</svg>

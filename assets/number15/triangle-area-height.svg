@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-labelledby="title">
+  <title id="title">Треугольник с высотой, проведённой к стороне</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M37 164 L220 38 L287 164 Z M220 38 V164"/>
+    <path d="M220 149 H235 V164" stroke-width="1.7"/>
+  </g>
+</svg>
