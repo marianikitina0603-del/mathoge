@@ -12,7 +12,7 @@
   }
   async function prepareSourceDiagrams(root){
     if(!root)return;
-    await Promise.all([...root.querySelectorAll('img.number10-diagram,img.number11-diagram')].map(async img=>{
+    await Promise.all([...root.querySelectorAll('img.number10-diagram,img.number11-diagram,img.number13-diagram')].map(async img=>{
       img.loading='eager';
       if(!img.complete)await new Promise((resolve,reject)=>{
         const finish=err=>{clearTimeout(timer);img.removeEventListener('load',loaded);img.removeEventListener('error',failed);err?reject(err):resolve();};
@@ -86,8 +86,8 @@
       let used=0;
       blocks.forEach(block=>{
         const copy=block.cloneNode(true);
-        // Исходные рисунки №10–11 занимают дополнительное место; старые блоки сохраняют прежний вес.
-        const weight=Math.max(1,copy.querySelectorAll('.preview-task').length)+(copy.textContent||'').length/1500+2*copy.querySelectorAll('img.number10-diagram,img.number11-diagram').length;
+        // Исходные рисунки №10–11 и координатные прямые №13 занимают дополнительное место.
+        const weight=Math.max(1,copy.querySelectorAll('.preview-task').length)+(copy.textContent||'').length/1500+2*copy.querySelectorAll('img.number10-diagram,img.number11-diagram,img.number13-diagram').length;
         if(used>0&&used+weight>4.7){pages.push(page);page=document.createElement('section');page.className='two-up-page';used=0;}
         page.appendChild(copy);used+=weight;
       });
@@ -103,7 +103,7 @@
       // документе. Переносим их и стили MathJax вместе с готовыми формулами.
       const mathStyles=document.getElementById('MJX-SVG-styles')?.outerHTML||'';
       const mathCache=document.getElementById('MJX-SVG-global-cache')?.outerHTML||'';
-      const diagramCss='.number10-diagram,.number11-diagram{display:block;width:auto;height:auto;max-width:65mm;max-height:37mm;object-fit:contain;margin:2mm auto;break-inside:avoid;page-break-inside:avoid}.number11-options{display:flex;gap:3mm;justify-content:space-between;flex-wrap:wrap}.number11-section-title{font-weight:700;font-size:6.5pt;margin:1mm 0}.number11-answer-note{margin:1mm 0 0}';
+      const diagramCss='.number10-diagram,.number11-diagram,.number13-diagram{display:block;width:auto;height:auto;max-width:65mm;max-height:37mm;object-fit:contain;margin:2mm auto;break-inside:avoid;page-break-inside:avoid}.number13-condition-diagram{max-height:13mm}.number13-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1mm 3mm;margin:1mm 0;font-size:6.5pt}.number11-options{display:flex;gap:3mm;justify-content:space-between;flex-wrap:wrap}.number11-section-title{font-weight:700;font-size:6.5pt;margin:1mm 0}.number11-answer-note{margin:1mm 0 0}';
       d.open();d.write(`<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Печать заданий</title><style>${css}${diagramCss}</style>${mathStyles}</head><body><div style="display:none" aria-hidden="true">${mathCache}</div>${pages.map(p=>p.outerHTML).join('')}</body></html>`);d.close();
       try{await prepareSourceDiagrams(d);}catch(err){iframe.remove();throw err;}
       setTimeout(()=>{try{iframe.contentWindow.focus();iframe.contentWindow.print();}finally{setTimeout(()=>iframe.remove(),1200);}},400);

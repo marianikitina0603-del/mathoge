@@ -19,3 +19,13 @@
 .number11-answer-note{display:block;margin:8px 0 0}
 @media(max-width:720px){.number11-options{grid-template-columns:1fr}}
 @media print{.number11-choice-block,.number11-graph-block{margin:1.5mm 0}.number11-section-title{font-size:9pt;margin-bottom:1mm}.number11-options{grid-template-columns:repeat(3,minmax(0,1fr));gap:2mm;font-size:9pt}.number11-diagram{width:auto;max-width:165mm;max-height:45mm;margin:1mm auto}.number11-answer-note{font-size:9pt;margin-top:1mm}}
+
+/* №13: варианты ответа и исходные координатные прямые ФИПИ. */
+.number13-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 20px;margin:12px 0 0;align-items:start}
+.number13-options>span{min-width:0;break-inside:avoid;page-break-inside:avoid}
+.number13-options b{display:inline-block;margin-right:3px;color:var(--text)}
+.number13-diagram{display:block;max-width:100%;width:auto;height:auto;object-fit:contain;margin:10px auto;break-inside:avoid;page-break-inside:avoid}
+.number13-choice-diagram{max-height:185px}
+.number13-condition-diagram{max-height:86px}
+@media(max-width:720px){.number13-options{grid-template-columns:1fr}.number13-choice-diagram{max-height:150px}}
+@media print{.number13-options{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5mm 4mm;margin-top:1.5mm;font-size:9pt}.number13-diagram{width:auto;max-width:165mm;margin:1.5mm auto}.number13-choice-diagram{max-height:38mm}.number13-condition-diagram{max-height:18mm}}
