@@ -9,3 +9,13 @@
 /* Рисунки №10 извлечены из исходного PDF; пропорции сохраняются. */
 .number10-diagram{display:block;max-width:100%;width:420px;height:auto;object-fit:contain;margin:10px auto;break-inside:avoid;page-break-inside:avoid}
 @media print{.number10-diagram{width:auto;max-width:85mm;max-height:48mm;margin:2mm auto}}
+
+/* №11: исходные графики ФИПИ и варианты соответствия. */
+.number11-choice-block,.number11-graph-block{display:block;margin:10px 0}
+.number11-section-title{display:block;font-weight:800;text-decoration:underline;margin:0 0 7px}
+.number11-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 18px;align-items:start}
+.number11-options>span{min-width:0}
+.number11-diagram{display:block;max-width:100%;width:520px;height:auto;object-fit:contain;margin:6px auto;break-inside:avoid;page-break-inside:avoid}
+.number11-answer-note{display:block;margin:8px 0 0}
+@media(max-width:720px){.number11-options{grid-template-columns:1fr}}
+@media print{.number11-choice-block,.number11-graph-block{margin:1.5mm 0}.number11-section-title{font-size:9pt;margin-bottom:1mm}.number11-options{grid-template-columns:repeat(3,minmax(0,1fr));gap:2mm;font-size:9pt}.number11-diagram{width:auto;max-width:165mm;max-height:45mm;margin:1mm auto}.number11-answer-note{font-size:9pt;margin-top:1mm}}
