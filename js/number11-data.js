@@ -3,13 +3,14 @@
   const existing=new Set(tasks.map(t=>t.id));
   const labelsLetters=['А','Б','В'];
   const labelsNumbers=['1','2','3'];
-  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const esc=s=>String(s).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
   const choiceBlock=spec=>{
     const heading=spec.choiceType==='formula'?'ФОРМУЛЫ':'КОЭФФИЦИЕНТЫ';
     const labels=spec.choiceFirst?labelsLetters:labelsNumbers;
     return `<span class="number11-choice-block"><span class="number11-section-title">${heading}</span><span class="number11-options">${spec.choices.map((value,index)=>`<span><b>${labels[index]})</b> \\(${value}\\)${index<2?';':''}</span>`).join('')}</span></span>`;
   };
   const graphBlock=spec=>`<span class="number11-graph-block"><span class="number11-section-title">ГРАФИКИ</span><img class="number11-diagram" src="${esc(spec.asset)}" alt="Графики к заданию ${esc(spec.id)}" loading="lazy"></span>`;
+  const answerTable=()=>`<span class="number11-answer-note"><span>В таблице под каждой буквой укажите соответствующий номер.</span><table class="number11-answer-table" aria-label="Таблица ответа"><tbody><tr><th>А</th><th>Б</th><th>В</th></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table></span>`;
   const question=spec=>{
     const p=Number(spec.prototype);
     if(p===1)return 'На рисунках изображены графики функций вида \\(y=kx+b\\). Установите соответствие между знаками коэффициентов \\(k\\) и \\(b\\) и графиками функций.';
@@ -22,7 +23,7 @@
   const add=spec=>{
     if(existing.has(spec.id))return;
     const choices=choiceBlock(spec),graph=graphBlock(spec);
-    const text=`${question(spec)}${spec.choiceFirst?choices+graph:graph+choices}<span class="number11-answer-note">В таблице под каждой буквой укажите соответствующий номер.</span>`;
+    const text=`${question(spec)}${spec.choiceFirst?choices+graph:graph+choices}${answerTable()}`;
     tasks.push({id:spec.id,sourceId:spec.id,fipiId:spec.id,number:11,prototype:spec.prototype,kind:spec.kind,section:'Алгебра',topic:'Графики функций',subtopic:subtopic(spec.prototype),text,answer:String(spec.answer),demo:!!spec.demo,latexMath:true,diagram:spec.asset});
     existing.add(spec.id);
   };
