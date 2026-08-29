@@ -32,8 +32,8 @@
     await load('js/number11-analogs.js?v=20260829-n11-1');
     await load('js/number12-data.js?v=20260829-n12-1');
     await load('js/number12-analogs.js?v=20260829-n12-1');
-    await load('js/number13-data.js?v=20260829-n13-1');
-    await load('js/number13-analogs.js?v=20260829-n13-1');
+    await load('js/number13-data.js?v=20260829-n13-svg-2');
+    await load('js/number13-analogs.js?v=20260829-n13-svg-2');
     await load('js/empty-numbers.js?v=20260828-2125');
     if(typeof window.hydrateVariant==='function')window.hydrateVariant();
     if(typeof window.renderBank==='function')window.renderBank(); if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();
