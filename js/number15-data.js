@@ -1,13 +1,19 @@
 // №15. Треугольники и их элементы. Прототипы ФИПИ.
 (function(){
   const existing=new Set(tasks.map(task=>task.id));
-  const images={"2":"assets/number15/triangle-exterior-angle.svg","4":"assets/number15/triangle-isosceles.svg","5":"assets/number15/triangle-isosceles-exterior.svg","6":"assets/number15/triangle-bisector.svg","7":"assets/number15/triangle-bisector-equal-segments.svg","8":"assets/number15/triangle-altitude.svg","9":"assets/number15/triangle-median-equal.svg","10":"assets/number15/triangle-median.svg","11":"assets/number15/equilateral-triangle-special-line.svg","12":"assets/number15/equilateral-triangle-special-line.svg","13":"assets/number15/equilateral-triangle-special-line.svg","14":"assets/number15/equilateral-triangle-special-line.svg","15":"assets/number15/equilateral-triangle-special-line.svg","16":"assets/number15/equilateral-triangle-special-line.svg","17":"assets/number15/triangle-midline.svg","18":"assets/number15/right-triangle.svg","19":"assets/number15/triangle-abc-simple.svg","20":"assets/number15/triangle-area-height.svg","21":"assets/number15/right-triangle.svg","22":"assets/number15/right-triangle.svg","23":"assets/number15/right-triangle-abc.svg","24":"assets/number15/right-triangle-abc.svg","25":"assets/number15/right-triangle-abc.svg","26":"assets/number15/right-triangle-abc.svg","27":"assets/number15/right-triangle-abc.svg","28":"assets/number15/right-triangle-abc.svg"};
+  const imageFor=spec=>{
+    const match=String(spec.id).match(/^15\.(\d+)(?:\.(\d+))?$/);
+    if(!match)return null;
+    return match[2]
+      ?`assets/number15_1/triangle-a15_${match[1]}_${match[2]}.png`
+      :`assets/number15_1/triangle-p15_${match[1]}.png`;
+  };
   const subtopics={"1":"Углы треугольника","2":"Углы треугольника","3":"Углы треугольника","4":"Углы треугольника","5":"Углы треугольника","6":"Медиана, биссектриса, высота и средняя линия","7":"Медиана, биссектриса, высота и средняя линия","8":"Медиана, биссектриса, высота и средняя линия","9":"Медиана, биссектриса, высота и средняя линия","10":"Медиана, биссектриса, высота и средняя линия","11":"Медиана, биссектриса, высота и средняя линия","12":"Медиана, биссектриса, высота и средняя линия","13":"Медиана, биссектриса, высота и средняя линия","14":"Медиана, биссектриса, высота и средняя линия","15":"Медиана, биссектриса, высота и средняя линия","16":"Медиана, биссектриса, высота и средняя линия","17":"Медиана, биссектриса, высота и средняя линия","18":"Площадь треугольника","19":"Площадь треугольника","20":"Площадь треугольника","21":"Прямоугольный треугольник","22":"Прямоугольный треугольник","23":"Прямоугольный треугольник","24":"Прямоугольный треугольник","25":"Прямоугольный треугольник","26":"Прямоугольный треугольник","27":"Прямоугольный треугольник","28":"Прямоугольный треугольник"};
   const esc=value=>String(value).replace(/[&<>"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[char]));
   const diagram=(image,id)=>image?`<img class="number15-diagram" src="${esc(image)}" alt="Геометрическая схема к заданию ${esc(id)}" loading="lazy" decoding="async">`:'';
   const add=spec=>{
     if(existing.has(spec.id))return;
-    const image=images[String(spec.prototype)]||null;
+    const image=imageFor(spec);
     tasks.push({id:spec.id,sourceId:spec.id,fipiId:spec.id,number:15,prototype:Number(spec.prototype),kind:spec.kind,section:'Геометрия',topic:'Треугольники и их элементы',subtopic:subtopics[String(spec.prototype)],text:spec.text+diagram(image,spec.id),image,diagram:image,answer:String(spec.answer),demo:!!spec.demo,latexMath:true,sourcePage:spec.page});
     existing.add(spec.id);
   };

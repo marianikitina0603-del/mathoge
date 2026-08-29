@@ -28,7 +28,7 @@
       chain('js/number12-data.js?v=20260829-n12-1','js/number12-analogs.js?v=20260829-n12-1'),
       chain('js/number13-data.js?v=20260829-n13-svg-2','js/number13-analogs.js?v=20260829-n13-svg-2'),
       chain('js/number14-data.js?v=20260829-n14-1','js/number14-analogs.js?v=20260829-n14-1'),
-      chain('js/number15-data.js?v=20260829-n15-1','js/number15-analogs.js?v=20260829-n15-1')
+      chain('js/number15-data.js?v=20260829-n15-png-1','js/number15-analogs.js?v=20260829-n15-png-1')
     ]);
     await load('js/empty-numbers.js?v=20260828-2125');
     if(typeof window.hydrateVariant==='function')window.hydrateVariant();
