@@ -43,8 +43,18 @@
     if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();else appendMissing(document.querySelector('#builderBankList'));
   }
 
+  function loadNumber24(){
+    if(document.querySelector('script[data-number24-loader]'))return;
+    const s=document.createElement('script');
+    s.src='js/number24-loader.js?v=20260830-n24-1';
+    s.async=true;
+    s.dataset.number24Loader='1';
+    document.body.appendChild(s);
+  }
+
   install();
-  // Повторная установка нужна после динамической загрузки «Квартир».
+  loadNumber24();
+  // Повторная установка нужна после динамической загрузки дополнительных разделов.
   setTimeout(install,500);
   setTimeout(install,1500);
 })();
