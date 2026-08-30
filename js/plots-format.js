@@ -13,6 +13,15 @@
   setTimeout(()=>{injectBankPlans();const originalRenderBuilderBank=window.renderBuilderBank;if(typeof originalRenderBuilderBank==='function'&&!originalRenderBuilderBank.__plotsWrapped){const wrapped=function(){originalRenderBuilderBank();injectBuilderPlans();};wrapped.__plotsWrapped=true;window.renderBuilderBank=wrapped;}injectBuilderPlans();},0);
   const load=(src)=>new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.async=true;s.onload=resolve;s.onerror=reject;document.body.appendChild(s);});
   const chain=async(...srcs)=>{for(const src of srcs)await load(src);};
+
+  function renderOnlyActiveHeavyPage(){
+    const bankActive=document.querySelector('#page-bank.page.active');
+    const builderActive=document.querySelector('#page-builder.page.active');
+    if(bankActive && typeof window.renderBank==='function')window.renderBank();
+    else if(builderActive && typeof window.renderBuilderBank==='function')window.renderBuilderBank();
+    if((bankActive||builderActive) && typeof window.typesetMathOGE==='function')window.typesetMathOGE();
+  }
+
   (async()=>{try{
     await Promise.all([
       chain('js/apartments-data.js?v=20260828-1728','js/apartments-format.js?v=20260828-1728'),
@@ -38,8 +47,15 @@
     ]);
     await load('js/empty-numbers.js?v=20260828-2125');
     if(typeof window.hydrateVariant==='function')window.hydrateVariant();
-    if(typeof window.renderBank==='function')window.renderBank(); if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();
-    if(typeof window.typesetMathOGE==='function')window.typesetMathOGE();
-    if(typeof window.refreshApartmentPlans==='function')window.refreshApartmentPlans(); if(typeof window.refreshSheetPlans==='function')window.refreshSheetPlans(); if(typeof window.refreshStoveTasks==='function')window.refreshStoveTasks(); if(typeof window.refreshTariffPlans==='function')window.refreshTariffPlans(); if(typeof window.refreshTirePlans==='function')window.refreshTirePlans(); if(typeof window.updateCounters==='function')window.updateCounters();
+
+    // Не строим одновременно два огромных списка. Это было главным источником подвисаний.
+    requestAnimationFrame(renderOnlyActiveHeavyPage);
+
+    if(typeof window.refreshApartmentPlans==='function')window.refreshApartmentPlans();
+    if(typeof window.refreshSheetPlans==='function')window.refreshSheetPlans();
+    if(typeof window.refreshStoveTasks==='function')window.refreshStoveTasks();
+    if(typeof window.refreshTariffPlans==='function')window.refreshTariffPlans();
+    if(typeof window.refreshTirePlans==='function')window.refreshTirePlans();
+    if(typeof window.updateCounters==='function')window.updateCounters();
   }catch(e){console.error('Не удалось загрузить дополнительные разделы банка',e);}})();
 })();
