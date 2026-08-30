@@ -14,14 +14,61 @@
   function realTasksForNumber(number){
     return tasks.filter(t=>t && Number(t.number)===number && t.text && !t.placeholder);
   }
+
+  // №1–5 в ОГЭ образуют единый практический комплект.
+  // У задач одного комплекта совпадает часть ID после номера задания:
+  // 1.7.1, 2.7.1, 3.7.1, 4.7.1, 5.7.1 -> ключ "7.1".
+  function taskFipiId(task){
+    if(!task)return '';
+    return String(task.fipiId ?? task.fipi ?? task.id ?? '').trim();
+  }
+  function practicalKey(task){
+    const id=taskFipiId(task);
+    const parts=id.split('.');
+    return parts.length>1?parts.slice(1).join('.'):'';
+  }
+  function selectRandomPracticalSet(){
+    const firstPool=realTasksForNumber(1).filter(task=>practicalKey(task));
+    if(!firstPool.length)return {selected:[],missing:[1,2,3,4,5]};
+
+    // Несколько попыток нужны на случай неполного комплекта в данных.
+    const shuffled=[...firstPool].sort(()=>Math.random()-0.5);
+    for(const first of shuffled){
+      const key=practicalKey(first);
+      const selected=[first];
+      let complete=true;
+      for(let number=2;number<=5;number++){
+        const match=realTasksForNumber(number).find(task=>practicalKey(task)===key);
+        if(!match){complete=false;break;}
+        selected.push(match);
+      }
+      if(complete)return {selected,missing:[]};
+    }
+
+    return {selected:[],missing:[1,2,3,4,5]};
+  }
+
   function selectRandomTasks(numbers){
-    const selected=[]; const missing=[];
-    uniqueNumbers(numbers).forEach(number=>{
+    const requested=uniqueNumbers(numbers);
+    const selected=[];
+    const missing=[];
+
+    // Если запрошены все №1–5, выбираем их одним связанным комплектом.
+    const hasFullPractical=[1,2,3,4,5].every(number=>requested.includes(number));
+    if(hasFullPractical){
+      const practical=selectRandomPracticalSet();
+      selected.push(...practical.selected);
+      missing.push(...practical.missing);
+    }
+
+    requested.forEach(number=>{
+      if(hasFullPractical && number<=5)return;
       const pool=realTasksForNumber(number);
       if(pool.length)selected.push(randomOf(pool)); else missing.push(number);
     });
-    return {selected,missing};
+    return {selected,missing:uniqueNumbers(missing)};
   }
+
   function setVariant(selected,title){
     variant=[...selected];
     localStorage.setItem('mathoge-current',JSON.stringify(variant));
