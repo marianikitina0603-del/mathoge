@@ -2,7 +2,7 @@
 // Главная страница остаётся лёгкой; полный банк подгружается только тогда,
 // когда пользователь действительно открывает банк, конструктор или запускает генерацию.
 (function(){
-  const BANK_SRC='js/plots-format.js?v=20260830-perf-1';
+  const BANK_SRC='js/plots-format.js?v=20260830-perf-2';
   let bankPromise=null;
 
   function showLoadingHint(){
