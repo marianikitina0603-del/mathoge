@@ -70,6 +70,29 @@
     });
   }
 
+  // DEMO — служебный признак в данных. На сайте эта подпись пользователю не показывается.
+  function removeDemoLabels(root=document.body){
+    if(!root)return;
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    const nodes=[];
+    while(walker.nextNode())nodes.push(walker.currentNode);
+    nodes.forEach(node=>{
+      if(/\bDEMO\b/i.test(node.nodeValue||'')){
+        node.nodeValue=node.nodeValue.replace(/\bDEMO\b/gi,'').replace(/\s{2,}/g,' ');
+      }
+    });
+  }
+  function installDemoCleaner(){
+    removeDemoLabels();
+    let queued=false;
+    const observer=new MutationObserver(()=>{
+      if(queued)return;
+      queued=true;
+      requestAnimationFrame(()=>{queued=false;removeDemoLabels();});
+    });
+    observer.observe(document.body,{childList:true,subtree:true,characterData:true});
+  }
+
   function install(){
     chips('algebraNumbers',ranges.algebra); chips('geometryNumbers',ranges.geometry);
     bindSelectionTools('algebra',ranges.algebra); bindSelectionTools('geometry',ranges.geometry);
@@ -86,6 +109,7 @@
       if(!nums.length){if(typeof toast==='function')toast('Выберите хотя бы один номер');return;}
       generate(nums,'Пятиминутка по геометрии');
     });
+    installDemoCleaner();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install); else install();
 })();
