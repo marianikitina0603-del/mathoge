@@ -53,7 +53,7 @@
   }
 
   install();
-  loadSection(18,'js/number18-loader.js?v=20260830-n18-1');
+  loadSection(18,'js/number18-loader.js?v=20260830-n18-2');
   loadSection(24,'js/number24-loader.js?v=20260830-n24-1');
   loadSection(25,'js/number25-loader.js?v=20260830-n25-1');
   // Повторная установка нужна после динамической загрузки дополнительных разделов.
