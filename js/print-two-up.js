@@ -273,3 +273,13 @@
     }catch(err){printError(err);}finally{printButton.disabled=false;}
   };
 })();
+
+// Печать с решением подключаем напрямую отсюда, потому что этот файл загружается всегда.
+(function(){
+  if(window.__ordinaryPrintDirectLoader)return;
+  window.__ordinaryPrintDirectLoader=true;
+  const script=document.createElement('script');
+  script.src='js/ordinary-print-image-fix.js?v=20260830-print-images-direct-1';
+  script.async=false;
+  document.body.appendChild(script);
+})();
