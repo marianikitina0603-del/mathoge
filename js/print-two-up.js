@@ -62,7 +62,7 @@
   async function prepareSourceDiagrams(root){
     if(!root)return;
     await waitForImages(root);
-    const failed=[...root.querySelectorAll('img.number10-diagram,img.number11-diagram,img.number13-diagram,img.number15-diagram,img.number16-diagram')].find(img=>!img.naturalWidth);
+    const failed=[...root.querySelectorAll('img.number10-diagram,img.number11-diagram,img.number13-diagram,img.number15-diagram,img.number16-diagram,img.number17-diagram')].find(img=>!img.naturalWidth);
     if(failed)throw new Error('Рисунок задания недоступен: '+failed.getAttribute('src'));
   }
 
@@ -242,7 +242,7 @@
           .preview-table-scroll{overflow:visible}.stove-task-diagram img{max-height:95px!important;width:auto!important;max-width:100%!important}
           .teacher-answer-page,.solution-grid,.solution-grid-svg,.solution-grid-answer,.answer-line{display:none!important}
           .number10-diagram,.number11-diagram,.number13-diagram{display:block;width:auto;height:auto;max-width:65mm;max-height:37mm;object-fit:contain;margin:2mm auto;break-inside:avoid;page-break-inside:avoid}
-          .number15-task-layout,.number16-task-layout{display:flow-root;min-width:0}.number15-diagram,.number16-diagram{float:right;display:block;width:26mm;height:20mm;max-width:34%;max-height:20mm;object-fit:contain;object-position:center;margin:0 0 1mm 2mm;break-inside:avoid;page-break-inside:avoid}
+          .number15-task-layout,.number16-task-layout,.number17-task-layout{display:flow-root;min-width:0}.number15-diagram,.number16-diagram,.number17-diagram{float:right;display:block;width:26mm;height:20mm;max-width:34%;max-height:20mm;object-fit:contain;object-position:center;margin:0 0 1mm 2mm;break-inside:avoid;page-break-inside:avoid}
           .number13-condition-diagram{max-height:13mm}.number13-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1mm 3mm;margin:1mm 0;font-size:6.5pt}
           .number11-options{display:flex;gap:3mm;justify-content:space-between;flex-wrap:wrap}.number11-section-title{font-weight:700;font-size:6.5pt;margin:1mm 0}.number11-answer-note{margin:1mm 0 0}
           @media print{html,body{width:auto}.two-up-grid{width:100%}.two-up-page{overflow:hidden}}
