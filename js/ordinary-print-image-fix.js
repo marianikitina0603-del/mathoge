@@ -1,5 +1,6 @@
 // Изолированная печать варианта с решением.
-// Печатаем не живую страницу, а отдельный iframe-клон и нормализуем рисунки прямо в нём.
+// Печатаем отдельный iframe-клон: MathJax готовим до клонирования,
+// а для решения оставляем только одно SVG-поле в клетку.
 (function(){
   if(window.__ordinaryPrintIframeInstalled)return;
   window.__ordinaryPrintIframeInstalled=true;
@@ -16,12 +17,47 @@
     })));
   }
 
+  async function prepareMath(root){
+    if(!root)return;
+    const mj=window.MathJax;
+    if(!mj)return;
+    if(mj.startup&&mj.startup.promise){
+      try{await mj.startup.promise;}catch(e){}
+    }
+    // Дожидаемся, пока текущий кадр с предпросмотром полностью построен.
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+    if(typeof mj.typesetPromise==='function'){
+      try{await mj.typesetPromise([root]);}catch(e){console.warn('MathJax print typeset',e);}
+    }
+    await new Promise(resolve=>requestAnimationFrame(resolve));
+  }
+
+  function ensureSolutionSvgs(root){
+    if(!root)return;
+    root.querySelectorAll('.solution-grid').forEach(grid=>{
+      let svg=grid.nextElementSibling;
+      if(svg?.classList?.contains('solution-grid-svg'))return;
+      svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+      svg.setAttribute('class','solution-grid-svg');
+      svg.setAttribute('viewBox','0 0 180 45');
+      svg.setAttribute('preserveAspectRatio','none');
+      let lines='';
+      for(let x=0;x<=180;x+=5)lines+=`<line x1="${x}" y1="0" x2="${x}" y2="45" stroke="#c8c8c8" stroke-width="0.35"/>`;
+      for(let y=0;y<=45;y+=5)lines+=`<line x1="0" y1="${y}" x2="180" y2="${y}" stroke="#c8c8c8" stroke-width="0.35"/>`;
+      svg.innerHTML=lines;
+      const answer=document.createElement('div');
+      answer.className='solution-grid-answer';
+      answer.textContent='Ответ: ____________________';
+      grid.insertAdjacentElement('afterend',svg);
+      svg.insertAdjacentElement('afterend',answer);
+    });
+  }
+
   function important(el,name,value){
     if(el)el.style.setProperty(name,value,'important');
   }
 
   function normalizePrintedDiagrams(d){
-    // №11: графики остаются отдельным компактным блоком.
     d.querySelectorAll('#examPaper .number11-diagram').forEach(img=>{
       important(img,'display','block');
       important(img,'float','none');
@@ -34,7 +70,6 @@
       important(img,'margin','2mm auto');
     });
 
-    // №15–18: рисунок всегда первым в блоке и плавает справа.
     d.querySelectorAll('#examPaper .number15-task-layout,#examPaper .number16-task-layout,#examPaper .number17-task-layout,#examPaper .number18-task-layout').forEach(layout=>{
       const img=layout.querySelector('.number15-diagram,.number16-diagram,.number17-diagram,.number18-diagram');
       if(img && layout.firstElementChild!==img)layout.insertBefore(img,layout.firstElementChild);
@@ -44,7 +79,6 @@
     });
 
     d.querySelectorAll('#examPaper .number15-diagram,#examPaper .number16-diagram,#examPaper .number17-diagram,#examPaper .number18-diagram').forEach(img=>{
-      // Полностью сбрасываем размеры, которые могли прийти из экранных/grid-стилей.
       img.removeAttribute('width');
       img.removeAttribute('height');
       important(img,'float','right');
@@ -67,6 +101,12 @@
     const source=document.getElementById('examPaper');
     if(!source)return;
 
+    try{
+      // Критично: сначала превращаем исходный LaTeX в MathJax, только затем клонируем.
+      await prepareMath(source);
+      ensureSolutionSvgs(source);
+    }catch(e){console.warn('Подготовка предпросмотра к печати',e);}
+
     const iframe=document.createElement('iframe');
     iframe.setAttribute('aria-hidden','true');
     iframe.style.cssText='position:fixed;left:-400mm;top:0;width:210mm;height:297mm;border:0;visibility:hidden;pointer-events:none;';
@@ -78,6 +118,7 @@
       const styles=[...document.querySelectorAll('style')].map(s=>s.outerHTML).join('');
       const links=[...document.querySelectorAll('link[rel="stylesheet"]')].map(l=>l.outerHTML).join('');
       const mathCache=document.getElementById('MJX-SVG-global-cache')?.outerHTML||'';
+      const mathStyles=document.getElementById('MJX-SVG-styles')?.outerHTML||'';
 
       const overrides=`
         @page{size:A4 portrait;margin:9mm}
@@ -87,19 +128,47 @@
         #examPaper{display:block!important;width:auto!important;max-width:none!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important}
         #previewList{display:block!important}
         #previewList .preview-task{break-inside:avoid!important;page-break-inside:avoid!important}
-        #examPaper .solution-grid{display:block!important}
+
+        /* Старое поле решения полностью убираем: раньше оно печаталось вместе с SVG и давало двойную клетку. */
+        #examPaper .solution-grid{display:none!important}
+        #examPaper .solution-grid-svg{
+          display:block!important;
+          width:100%!important;
+          height:90px!important;
+          margin:8px 0 4px!important;
+          border:1px solid #b8b8b8!important;
+          background:#fff!important;
+          break-inside:avoid!important;
+          page-break-inside:avoid!important;
+        }
+        #examPaper .preview-task[data-task-number="21"] .solution-grid-svg{height:180px!important}
+        #examPaper .solution-grid-answer{
+          display:block!important;
+          font-size:8.5pt!important;
+          margin-top:-21px!important;
+          margin-left:8px!important;
+          margin-bottom:8px!important;
+          background:#fff!important;
+          width:max-content!important;
+          padding:0 4px!important;
+          position:relative!important;
+          z-index:2!important;
+        }
         #examPaper .teacher-answer-page{display:block!important}
         #examPaper .answer-line{display:none!important}
+
+        /* В печатном iframe формулы уже приходят как готовый MathJax SVG. */
+        #examPaper mjx-container{visibility:visible!important;opacity:1!important}
+        #examPaper mjx-container[jax="SVG"]{display:inline-block!important;max-width:100%!important}
+        #examPaper mjx-container[display="true"]{display:block!important}
       `;
 
       d.open();
-      d.write(`<!doctype html><html lang="ru"><head><meta charset="utf-8">${links}${styles}<style>${overrides}</style></head><body><div style="display:none" aria-hidden="true">${mathCache}</div>${clone.outerHTML}</body></html>`);
+      d.write(`<!doctype html><html lang="ru"><head><meta charset="utf-8">${links}${styles}${mathStyles}<style>${overrides}</style></head><body><div style="display:none" aria-hidden="true">${mathCache}</div>${clone.outerHTML}</body></html>`);
       d.close();
 
-      // ВАЖНО: нормализуем уже реальный DOM печатного iframe после подключения всех стилей.
       normalizePrintedDiagrams(d);
       await waitForImages(d);
-      // Повторяем после загрузки SVG/PNG: некоторые браузеры пересчитывают intrinsic size.
       normalizePrintedDiagrams(d);
 
       if(d.fonts&&d.fonts.ready){try{await d.fonts.ready;}catch(e){}}
