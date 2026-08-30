@@ -103,15 +103,11 @@
       if(!task)continue;
       const svg=task.querySelector('.solution-grid-svg');
       if(!svg)continue;
-
-      // Поле печатается примерно 192×225 мм. ViewBox 180×210 даёт почти
-      // одинаковый физический шаг по X и Y, поэтому клетки остаются квадратными.
       const w=180;
       const h=210;
       const step=5;
       svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
       svg.setAttribute('preserveAspectRatio','none');
-
       let markup='';
       for(let x=0;x<=w;x+=step){
         markup+=`<line x1="${x}" y1="0" x2="${x}" y2="${h}" stroke="#c7c7c7" stroke-width="0.32" vector-effect="non-scaling-stroke"/>`;
@@ -119,8 +115,6 @@
       for(let y=0;y<=h;y+=step){
         markup+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#c7c7c7" stroke-width="0.32" vector-effect="non-scaling-stroke"/>`;
       }
-
-      // Подпись как в образце: внутри поля сверху слева, на белой подложке.
       markup+=`<rect x="2" y="2" width="23" height="7" fill="#fff"/>`;
       markup+=`<text x="3" y="7" font-size="4.2" font-family="Arial, sans-serif" font-weight="700" fill="#111">Решение:</text>`;
       svg.innerHTML=markup;
@@ -151,10 +145,17 @@
 
       const overrides=`
         @page{size:A4 portrait;margin:9mm}
-        html,body{margin:0!important;padding:0!important;background:#fff!important}
+        html,body{margin:0!important;padding:0!important;background:#fff!important;color:#111!important}
         body{width:auto!important}
         .app-shell,.sidebar,.topbar,.preview-toolbar{display:none!important}
-        #examPaper{display:block!important;width:auto!important;max-width:none!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important}
+        #examPaper{display:block!important;width:auto!important;max-width:none!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important;color:#111!important}
+        #examPaper,#examPaper *{color:#111!important}
+        #examPaper svg:not(.solution-grid-svg) text{fill:#111!important}
+        #examPaper mjx-container,#examPaper mjx-container *{color:#111!important}
+        #examPaper mjx-container[jax="SVG"] svg{color:#111!important}
+        #examPaper mjx-container[jax="SVG"] svg path,
+        #examPaper mjx-container[jax="SVG"] svg use,
+        #examPaper mjx-container[jax="SVG"] svg g{fill:currentColor!important;color:#111!important}
         #previewList{display:block!important}
         #previewList .preview-task{break-inside:avoid!important;page-break-inside:avoid!important}
 
@@ -171,7 +172,6 @@
         }
         #examPaper .preview-task[data-task-number="21"] .solution-grid-svg{height:180px!important}
 
-        /* №20–25: каждое задание получает отдельную страницу с большим полем для решения. */
         #examPaper .preview-task[data-task-number="20"],
         #examPaper .preview-task[data-task-number="21"],
         #examPaper .preview-task[data-task-number="22"],
@@ -197,6 +197,7 @@
 
         #examPaper .solution-grid-answer{
           display:block!important;
+          color:#111!important;
           font-size:8.5pt!important;
           margin-top:-21px!important;
           margin-left:8px!important;
@@ -210,8 +211,8 @@
         #examPaper .teacher-answer-page{display:block!important}
         #examPaper .answer-line{display:none!important}
 
-        #examPaper mjx-container{visibility:visible!important;opacity:1!important}
-        #examPaper mjx-container[jax="SVG"]{display:inline-block!important;max-width:100%!important}
+        #examPaper mjx-container{visibility:visible!important;opacity:1!important;color:#111!important}
+        #examPaper mjx-container[jax="SVG"]{display:inline-block!important;max-width:100%!important;color:#111!important}
         #examPaper mjx-container[display="true"]{display:block!important}
       `;
 
