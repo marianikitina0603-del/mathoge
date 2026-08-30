@@ -8,7 +8,8 @@
     return m[2]?`assets/number18/cell-а18_${m[1]}_${m[2]}.png`:`assets/number18/cell-p18_${m[1]}.png`;
   };
   const esc=v=>String(v).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
-  const diagram=(image,id)=>image?`<img class="number18-diagram" src="${esc(image)}" alt="Рисунок на клетчатой бумаге к заданию ${esc(id)}" loading="lazy" decoding="async">`:'';
+  const twoUpStyle='<style>.two-up-grid .number18-task-layout{display:flow-root!important;min-width:0}.two-up-grid .number18-diagram{float:right!important;display:block!important;width:26mm!important;height:20mm!important;max-width:34%!important;max-height:20mm!important;object-fit:contain!important;object-position:center!important;margin:0 0 1mm 2mm!important;break-inside:avoid!important;page-break-inside:avoid!important}</style>';
+  const diagram=(image,id)=>image?`${twoUpStyle}<img class="number18-diagram" src="${esc(image)}" alt="Рисунок на клетчатой бумаге к заданию ${esc(id)}" loading="lazy" decoding="async">`:'';
   const taskLayout=(text,image,id)=>`<span class="number18-task-layout"><span class="number18-task-copy">${text}</span>${diagram(image,id)}</span>`;
   const add=spec=>{
     if(existing.has(spec.id))return;
