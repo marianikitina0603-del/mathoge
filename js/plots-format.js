@@ -34,7 +34,7 @@
         .then(()=>chain('js/number19-data.js?v=20260830-n19-1','js/number19-analogs.js?v=20260830-n19-1'))
         .then(()=>chain('js/number20-data.js?v=20260830-n20-1','js/number20-analogs.js?v=20260830-n20-1'))
         .then(()=>chain('js/number21-data.js?v=20260830-n21-1','js/number21-analogs.js?v=20260830-n21-1','js/number21-analogs-part2.js?v=20260830-n21-1'))
-        .then(()=>chain('js/number22-data.js?v=20260830-n22-1','js/number22-analogs.js?v=20260830-n22-1','js/number22-analogs-part2.js?v=20260830-n22-1','js/number22-analogs-part3.js?v=20260830-n22-1','js/number22-analogs-part4.js?v=20260830-n22-1'))
+        .then(()=>chain('js/number22-data.js?v=20260830-n22-1','js/number22-analogs.js?v=20260830-n22-1','js/number22-analogs-part2.js?v=20260830-n22-1','js/number22-analogs-part3.js?v=20260830-n22-1','js/number22-analogs-part4.js?v=20260830-n22-1','js/number22-print.js?v=20260830-n22-1'))
     ]);
     await load('js/empty-numbers.js?v=20260828-2125');
     if(typeof window.hydrateVariant==='function')window.hydrateVariant();
