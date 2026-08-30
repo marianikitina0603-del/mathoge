@@ -31,6 +31,7 @@
       chain('js/number15-data.js?v=20260829-n15-side-1','js/number15-analogs.js?v=20260829-n15-side-1')
         .then(()=>chain('js/number16-data.js?v=20260830-n16-1','js/number16-analogs.js?v=20260830-n16-answer-2'))
         .then(()=>chain('js/number17-data.js?v=20260830-n17-1','js/number17-analogs.js?v=20260830-n17-1'))
+        .then(()=>chain('js/number19-data.js?v=20260830-n19-1','js/number19-analogs.js?v=20260830-n19-1'))
     ]);
     await load('js/empty-numbers.js?v=20260828-2125');
     if(typeof window.hydrateVariant==='function')window.hydrateVariant();
