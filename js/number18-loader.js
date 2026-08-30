@@ -7,6 +7,7 @@
       await load('js/number18-analogs.js?v=20260830-n18-1');
       await load('js/number18-analogs-part2.js?v=20260830-n18-1');
       await load('js/number18-analogs-part3.js?v=20260830-n18-1');
+      await load('js/number18-print-fix.js?v=20260830-n18-print-2');
       if(typeof window.hydrateVariant==='function')window.hydrateVariant();
       if(typeof window.renderBank==='function')window.renderBank();
       if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();
