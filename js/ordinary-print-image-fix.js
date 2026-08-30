@@ -96,6 +96,37 @@
     });
   }
 
+  function rebuildFullPageSolutionGrids(d){
+    if(!d)return;
+    for(let number=20;number<=25;number++){
+      const task=d.querySelector(`#examPaper .preview-task[data-task-number="${number}"]`);
+      if(!task)continue;
+      const svg=task.querySelector('.solution-grid-svg');
+      if(!svg)continue;
+
+      // Поле печатается примерно 192×225 мм. ViewBox 180×210 даёт почти
+      // одинаковый физический шаг по X и Y, поэтому клетки остаются квадратными.
+      const w=180;
+      const h=210;
+      const step=5;
+      svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+      svg.setAttribute('preserveAspectRatio','none');
+
+      let markup='';
+      for(let x=0;x<=w;x+=step){
+        markup+=`<line x1="${x}" y1="0" x2="${x}" y2="${h}" stroke="#c7c7c7" stroke-width="0.32" vector-effect="non-scaling-stroke"/>`;
+      }
+      for(let y=0;y<=h;y+=step){
+        markup+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#c7c7c7" stroke-width="0.32" vector-effect="non-scaling-stroke"/>`;
+      }
+
+      // Подпись как в образце: внутри поля сверху слева, на белой подложке.
+      markup+=`<rect x="2" y="2" width="23" height="7" fill="#fff"/>`;
+      markup+=`<text x="3" y="7" font-size="4.2" font-family="Arial, sans-serif" font-weight="700" fill="#111">Решение:</text>`;
+      svg.innerHTML=markup;
+    }
+  }
+
   async function printWithSolutions(){
     const source=document.getElementById('examPaper');
     if(!source)return;
@@ -189,12 +220,15 @@
       d.close();
 
       normalizePrintedDiagrams(d);
+      rebuildFullPageSolutionGrids(d);
       await waitForImages(d);
       normalizePrintedDiagrams(d);
+      rebuildFullPageSolutionGrids(d);
 
       if(d.fonts&&d.fonts.ready){try{await d.fonts.ready;}catch(e){}}
       await new Promise(resolve=>(iframe.contentWindow.requestAnimationFrame||requestAnimationFrame)(()=>resolve()));
       normalizePrintedDiagrams(d);
+      rebuildFullPageSolutionGrids(d);
 
       iframe.contentWindow.focus();
       iframe.contentWindow.print();
