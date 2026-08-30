@@ -43,17 +43,18 @@
     if(typeof window.renderBuilderBank==='function')window.renderBuilderBank();else appendMissing(document.querySelector('#builderBankList'));
   }
 
-  function loadNumber24(){
-    if(document.querySelector('script[data-number24-loader]'))return;
+  function loadSection(number,src){
+    if(document.querySelector(`script[data-number-loader="${number}"]`))return;
     const s=document.createElement('script');
-    s.src='js/number24-loader.js?v=20260830-n24-1';
+    s.src=src;
     s.async=true;
-    s.dataset.number24Loader='1';
+    s.dataset.numberLoader=String(number);
     document.body.appendChild(s);
   }
 
   install();
-  loadNumber24();
+  loadSection(24,'js/number24-loader.js?v=20260830-n24-1');
+  loadSection(25,'js/number25-loader.js?v=20260830-n25-1');
   // Повторная установка нужна после динамической загрузки дополнительных разделов.
   setTimeout(install,500);
   setTimeout(install,1500);
