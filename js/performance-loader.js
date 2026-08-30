@@ -36,7 +36,7 @@
 
   // Загружаем тяжёлые данные только по реальному намерению пользователя.
   document.addEventListener('click',event=>{
-    const target=event.target.closest('[data-page="bank"],[data-page="builder"],#homeRandomVariantBtn,[data-go="bank"],[data-go="builder"]');
+    const target=event.target.closest('[data-page="bank"],[data-page="builder"],[data-go="bank"],[data-go="builder"],#generatePart1,#generatePart2,#generateCore,#generateAlgebraFive,#generateGeometryFive');
     if(target)window.loadFullMathOGEBank().catch(console.error);
   },true);
 
