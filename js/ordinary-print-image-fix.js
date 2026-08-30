@@ -88,7 +88,17 @@
     try{await prepareMath(source);ensureSolutionSvgs(source);}catch(e){console.warn('Подготовка предпросмотра к печати',e);}
     const iframe=document.createElement('iframe');iframe.setAttribute('aria-hidden','true');iframe.style.cssText='position:fixed;left:-400mm;top:0;width:210mm;height:297mm;border:0;visibility:hidden;pointer-events:none;';document.body.appendChild(iframe);
     try{
-      const d=iframe.contentDocument;const clone=source.cloneNode(true);const styles=[...document.querySelectorAll('style')].map(s=>s.outerHTML).join('');const links=[...document.querySelectorAll('link[rel="stylesheet"]')].map(l=>l.outerHTML).join('');const mathCache=document.getElementById('MJX-SVG-global-cache')?.outerHTML||'';const mathStyles=document.getElementById('MJX-SVG-styles')?.outerHTML||'';
+      const d=iframe.contentDocument;
+      const clone=source.cloneNode(true);
+      const printedTasks=[...clone.querySelectorAll('#previewList .preview-task[data-task-number]')];
+      const printedNumbers=printedTasks.map(task=>Number(task.dataset.taskNumber)).filter(Number.isFinite);
+      const part2Only=printedNumbers.length>0&&printedNumbers.every(number=>number>=20&&number<=25);
+      if(part2Only){
+        clone.classList.add('part2-only-print');
+        clone.querySelector('.exam-head')?.remove();
+        printedTasks[0]?.classList.add('first-part2-print');
+      }
+      const styles=[...document.querySelectorAll('style')].map(s=>s.outerHTML).join('');const links=[...document.querySelectorAll('link[rel="stylesheet"]')].map(l=>l.outerHTML).join('');const mathCache=document.getElementById('MJX-SVG-global-cache')?.outerHTML||'';const mathStyles=document.getElementById('MJX-SVG-styles')?.outerHTML||'';
       const overrides=`
         @page{size:A4 portrait;margin:9mm}
         html,body{margin:0!important;padding:0!important;background:#fff!important;color:${PRINT_TEXT_COLOR}!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
@@ -106,6 +116,7 @@
         #examPaper .solution-grid-svg{display:block!important;width:100%!important;height:90px!important;margin:8px 0 4px!important;border:1px solid #b8b8b8!important;background:#fff!important;break-inside:avoid!important;page-break-inside:avoid!important}
         #examPaper .preview-task[data-task-number="21"] .solution-grid-svg{height:180px!important}
         #examPaper .preview-task[data-task-number="20"],#examPaper .preview-task[data-task-number="21"],#examPaper .preview-task[data-task-number="22"],#examPaper .preview-task[data-task-number="23"],#examPaper .preview-task[data-task-number="24"],#examPaper .preview-task[data-task-number="25"]{break-before:page!important;page-break-before:always!important;break-after:page!important;page-break-after:always!important;break-inside:auto!important;page-break-inside:auto!important}
+        #examPaper.part2-only-print .preview-task.first-part2-print{break-before:auto!important;page-break-before:auto!important}
         #examPaper .preview-task[data-task-number="20"] .solution-grid-svg,#examPaper .preview-task[data-task-number="21"] .solution-grid-svg,#examPaper .preview-task[data-task-number="22"] .solution-grid-svg,#examPaper .preview-task[data-task-number="23"] .solution-grid-svg,#examPaper .preview-task[data-task-number="24"] .solution-grid-svg,#examPaper .preview-task[data-task-number="25"] .solution-grid-svg{height:225mm!important;margin-top:5mm!important}
         #examPaper .solution-grid-answer{display:block!important;color:${PRINT_TEXT_COLOR}!important;font-size:8.5pt!important;margin-top:-21px!important;margin-left:8px!important;margin-bottom:8px!important;background:#fff!important;width:max-content!important;padding:0 4px!important;position:relative!important;z-index:2!important}
         #examPaper .teacher-answer-page{display:block!important}
