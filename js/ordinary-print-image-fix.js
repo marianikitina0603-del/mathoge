@@ -24,7 +24,6 @@
     if(mj.startup&&mj.startup.promise){
       try{await mj.startup.promise;}catch(e){}
     }
-    // Дожидаемся, пока текущий кадр с предпросмотром полностью построен.
     await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
     if(typeof mj.typesetPromise==='function'){
       try{await mj.typesetPromise([root]);}catch(e){console.warn('MathJax print typeset',e);}
@@ -102,7 +101,6 @@
     if(!source)return;
 
     try{
-      // Критично: сначала превращаем исходный LaTeX в MathJax, только затем клонируем.
       await prepareMath(source);
       ensureSolutionSvgs(source);
     }catch(e){console.warn('Подготовка предпросмотра к печати',e);}
@@ -129,7 +127,6 @@
         #previewList{display:block!important}
         #previewList .preview-task{break-inside:avoid!important;page-break-inside:avoid!important}
 
-        /* Старое поле решения полностью убираем: раньше оно печаталось вместе с SVG и давало двойную клетку. */
         #examPaper .solution-grid{display:none!important}
         #examPaper .solution-grid-svg{
           display:block!important;
@@ -142,6 +139,31 @@
           page-break-inside:avoid!important;
         }
         #examPaper .preview-task[data-task-number="21"] .solution-grid-svg{height:180px!important}
+
+        /* №20–25: каждое задание получает отдельную страницу с большим полем для решения. */
+        #examPaper .preview-task[data-task-number="20"],
+        #examPaper .preview-task[data-task-number="21"],
+        #examPaper .preview-task[data-task-number="22"],
+        #examPaper .preview-task[data-task-number="23"],
+        #examPaper .preview-task[data-task-number="24"],
+        #examPaper .preview-task[data-task-number="25"]{
+          break-before:page!important;
+          page-break-before:always!important;
+          break-after:page!important;
+          page-break-after:always!important;
+          break-inside:auto!important;
+          page-break-inside:auto!important;
+        }
+        #examPaper .preview-task[data-task-number="20"] .solution-grid-svg,
+        #examPaper .preview-task[data-task-number="21"] .solution-grid-svg,
+        #examPaper .preview-task[data-task-number="22"] .solution-grid-svg,
+        #examPaper .preview-task[data-task-number="23"] .solution-grid-svg,
+        #examPaper .preview-task[data-task-number="24"] .solution-grid-svg,
+        #examPaper .preview-task[data-task-number="25"] .solution-grid-svg{
+          height:225mm!important;
+          margin-top:5mm!important;
+        }
+
         #examPaper .solution-grid-answer{
           display:block!important;
           font-size:8.5pt!important;
@@ -157,7 +179,6 @@
         #examPaper .teacher-answer-page{display:block!important}
         #examPaper .answer-line{display:none!important}
 
-        /* В печатном iframe формулы уже приходят как готовый MathJax SVG. */
         #examPaper mjx-container{visibility:visible!important;opacity:1!important}
         #examPaper mjx-container[jax="SVG"]{display:inline-block!important;max-width:100%!important}
         #examPaper mjx-container[display="true"]{display:block!important}
