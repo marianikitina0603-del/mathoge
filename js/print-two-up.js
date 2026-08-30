@@ -279,7 +279,7 @@
   if(window.__ordinaryPrintDirectLoader)return;
   window.__ordinaryPrintDirectLoader=true;
   const script=document.createElement('script');
-  script.src='js/ordinary-print-image-fix.js?v=20260830-print-images-direct-1';
+  script.src='js/ordinary-print-image-fix.js?v=20260830-print-images-direct-2';
   script.async=false;
   document.body.appendChild(script);
 })();
