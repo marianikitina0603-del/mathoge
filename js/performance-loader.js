@@ -34,6 +34,38 @@
     return bankPromise;
   };
 
+  function clearHeavyRoot(selector){
+    const root=document.querySelector(selector);
+    if(!root || !root.childNodes.length)return;
+    root.replaceChildren();
+  }
+
+  function navigationDestination(target){
+    if(!target)return '';
+    if(target.dataset?.page)return target.dataset.page;
+    if(target.dataset?.go)return target.dataset.go;
+    if(target.id==='previewFromBuilder')return 'preview';
+    if(target.id==='backToBuilder'||target.id==='showVariantBtn')return 'builder';
+    return '';
+  }
+
+  // Перед переходом освобождаем DOM скрытого тяжёлого раздела.
+  // Данные заданий остаются в памяти; при возврате строится только нужная страница.
+  document.addEventListener('click',event=>{
+    const target=event.target.closest('[data-page],[data-go],#previewFromBuilder,#backToBuilder,#showVariantBtn');
+    const destination=navigationDestination(target);
+    if(!destination)return;
+
+    if(destination==='preview'){
+      clearHeavyRoot('#taskList');
+      clearHeavyRoot('#builderBankList');
+    }else if(destination==='builder'){
+      clearHeavyRoot('#taskList');
+    }else if(destination==='bank'){
+      clearHeavyRoot('#builderBankList');
+    }
+  },true);
+
   // Загружаем тяжёлые данные только по реальному намерению пользователя.
   document.addEventListener('click',event=>{
     const target=event.target.closest('[data-page="bank"],[data-page="builder"],[data-go="bank"],[data-go="builder"],#generatePart1,#generatePart2,#generateCore,#generateAlgebraFive,#generateGeometryFive');
