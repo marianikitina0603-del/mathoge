@@ -1,7 +1,7 @@
 // Дополнительные режимы печати: клетка для решения и максимально плотная печать 2 страниц заданий на листе.
 (function(){
   const FONT_STORAGE_KEY='mathoge-selected-font';
-  const PRINT_TEXT_COLOR='#111';
+  const PRINT_TEXT_COLOR='#000';
 
   function getSelectedFont(){
     const select=document.getElementById('fontSelect');
@@ -28,10 +28,10 @@
     select.addEventListener('change',()=>applySelectedFont(select.value));
     const printStyle=document.createElement('style');
     printStyle.textContent=`@media print{
-      html,body,#examPaper,#examPaper *{font-family:var(--selected-font, Arial, sans-serif)!important;color:${PRINT_TEXT_COLOR}!important;-webkit-text-fill-color:${PRINT_TEXT_COLOR}!important}
+      html,body,#examPaper,#examPaper *{font-family:var(--selected-font, Arial, sans-serif)!important;color:${PRINT_TEXT_COLOR}!important;-webkit-text-fill-color:${PRINT_TEXT_COLOR}!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
       #examPaper mjx-container,#examPaper mjx-container *{font-family:initial!important;color:${PRINT_TEXT_COLOR}!important;-webkit-text-fill-color:${PRINT_TEXT_COLOR}!important}
       #examPaper mjx-container[jax="SVG"] svg,#examPaper mjx-container[jax="SVG"] svg *{color:${PRINT_TEXT_COLOR}!important}
-      #examPaper mjx-container[jax="SVG"] path,#examPaper mjx-container[jax="SVG"] use{fill:currentColor!important;stroke:currentColor}
+      #examPaper mjx-container[jax="SVG"] path,#examPaper mjx-container[jax="SVG"] use{fill:${PRINT_TEXT_COLOR}!important;stroke:none!important}
     }`;
     document.head.appendChild(printStyle);
   }
@@ -206,12 +206,12 @@
         const printFont=getSelectedFont();
         const css=`
           @page{size:A4 landscape;margin:7mm}
-          *{box-sizing:border-box;color:${PRINT_TEXT_COLOR}!important;-webkit-text-fill-color:${PRINT_TEXT_COLOR}!important}
+          *{box-sizing:border-box;color:${PRINT_TEXT_COLOR}!important;-webkit-text-fill-color:${PRINT_TEXT_COLOR}!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
           html,body{margin:0;padding:0;font-family:${printFont};color:${PRINT_TEXT_COLOR}!important;width:283mm}
           body{overflow:visible}
           mjx-container,mjx-container *{color:${PRINT_TEXT_COLOR}!important;-webkit-text-fill-color:${PRINT_TEXT_COLOR}!important}
           mjx-container[jax="SVG"] svg,mjx-container[jax="SVG"] svg *{color:${PRINT_TEXT_COLOR}!important}
-          mjx-container[jax="SVG"] path,mjx-container[jax="SVG"] use{fill:currentColor!important;stroke:currentColor}
+          mjx-container[jax="SVG"] path,mjx-container[jax="SVG"] use{fill:${PRINT_TEXT_COLOR}!important;stroke:none!important}
           .two-up-grid{width:283mm;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:8mm;align-items:start}
           .two-up-page{height:196mm;min-height:196mm;max-height:196mm;min-width:0;overflow:hidden;padding:0 2mm 0 0;break-inside:avoid;page-break-inside:avoid}
           .two-up-page:nth-child(2n){border-left:1px dashed #aaa;padding-left:6mm;padding-right:0}
@@ -288,7 +288,7 @@
   if(window.__ordinaryPrintDirectLoader)return;
   window.__ordinaryPrintDirectLoader=true;
   const script=document.createElement('script');
-  script.src='js/ordinary-print-image-fix.js?v=20260830-print-color-all-1';
+  script.src='js/ordinary-print-image-fix.js?v=20260830-print-black-1';
   script.async=false;
   document.body.appendChild(script);
 })();
