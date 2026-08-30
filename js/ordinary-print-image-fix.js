@@ -1,5 +1,5 @@
 // Изолированная печать варианта с решением.
-// Печатаем не живую страницу, а отдельный iframe-клон с собственными размерами рисунков.
+// Печатаем не живую страницу, а отдельный iframe-клон и нормализуем рисунки прямо в нём.
 (function(){
   if(window.__ordinaryPrintIframeInstalled)return;
   window.__ordinaryPrintIframeInstalled=true;
@@ -14,6 +14,53 @@
       img.addEventListener('error',done,{once:true});
       setTimeout(done,10000);
     })));
+  }
+
+  function important(el,name,value){
+    if(el)el.style.setProperty(name,value,'important');
+  }
+
+  function normalizePrintedDiagrams(d){
+    // №11: графики остаются отдельным компактным блоком.
+    d.querySelectorAll('#examPaper .number11-diagram').forEach(img=>{
+      important(img,'display','block');
+      important(img,'float','none');
+      important(img,'width','auto');
+      important(img,'height','auto');
+      important(img,'max-width','68mm');
+      important(img,'max-height','35mm');
+      important(img,'object-fit','contain');
+      important(img,'object-position','center');
+      important(img,'margin','2mm auto');
+    });
+
+    // №15–18: рисунок всегда первым в блоке и плавает справа.
+    d.querySelectorAll('#examPaper .number15-task-layout,#examPaper .number16-task-layout,#examPaper .number17-task-layout,#examPaper .number18-task-layout').forEach(layout=>{
+      const img=layout.querySelector('.number15-diagram,.number16-diagram,.number17-diagram,.number18-diagram');
+      if(img && layout.firstElementChild!==img)layout.insertBefore(img,layout.firstElementChild);
+      important(layout,'display','flow-root');
+      important(layout,'min-width','0');
+      important(layout,'width','100%');
+    });
+
+    d.querySelectorAll('#examPaper .number15-diagram,#examPaper .number16-diagram,#examPaper .number17-diagram,#examPaper .number18-diagram').forEach(img=>{
+      // Полностью сбрасываем размеры, которые могли прийти из экранных/grid-стилей.
+      img.removeAttribute('width');
+      img.removeAttribute('height');
+      important(img,'float','right');
+      important(img,'display','block');
+      important(img,'width','38mm');
+      important(img,'height','28mm');
+      important(img,'min-width','0');
+      important(img,'min-height','0');
+      important(img,'max-width','38mm');
+      important(img,'max-height','28mm');
+      important(img,'object-fit','contain');
+      important(img,'object-position','center');
+      important(img,'margin','0 0 2mm 4mm');
+      important(img,'break-inside','avoid');
+      important(img,'page-break-inside','avoid');
+    });
   }
 
   async function printWithSolutions(){
@@ -40,35 +87,6 @@
         #examPaper{display:block!important;width:auto!important;max-width:none!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important}
         #previewList{display:block!important}
         #previewList .preview-task{break-inside:avoid!important;page-break-inside:avoid!important}
-
-        #examPaper .number11-graph-block{display:block!important}
-        #examPaper .number11-diagram{
-          display:block!important;float:none!important;
-          width:auto!important;height:auto!important;
-          max-width:65mm!important;max-height:37mm!important;
-          object-fit:contain!important;object-position:center!important;
-          margin:2mm auto!important;
-          break-inside:avoid!important;page-break-inside:avoid!important;
-        }
-
-        #examPaper .number15-task-layout,
-        #examPaper .number16-task-layout,
-        #examPaper .number17-task-layout,
-        #examPaper .number18-task-layout{
-          display:flow-root!important;min-width:0!important;
-        }
-        #examPaper .number15-diagram,
-        #examPaper .number16-diagram,
-        #examPaper .number17-diagram,
-        #examPaper .number18-diagram{
-          float:right!important;display:block!important;
-          width:42mm!important;height:30mm!important;
-          max-width:38%!important;max-height:30mm!important;
-          object-fit:contain!important;object-position:center!important;
-          margin:0 0 2mm 4mm!important;
-          break-inside:avoid!important;page-break-inside:avoid!important;
-        }
-
         #examPaper .solution-grid{display:block!important}
         #examPaper .teacher-answer-page{display:block!important}
         #examPaper .answer-line{display:none!important}
@@ -78,9 +96,16 @@
       d.write(`<!doctype html><html lang="ru"><head><meta charset="utf-8">${links}${styles}<style>${overrides}</style></head><body><div style="display:none" aria-hidden="true">${mathCache}</div>${clone.outerHTML}</body></html>`);
       d.close();
 
+      // ВАЖНО: нормализуем уже реальный DOM печатного iframe после подключения всех стилей.
+      normalizePrintedDiagrams(d);
       await waitForImages(d);
+      // Повторяем после загрузки SVG/PNG: некоторые браузеры пересчитывают intrinsic size.
+      normalizePrintedDiagrams(d);
+
       if(d.fonts&&d.fonts.ready){try{await d.fonts.ready;}catch(e){}}
       await new Promise(resolve=>(iframe.contentWindow.requestAnimationFrame||requestAnimationFrame)(()=>resolve()));
+      normalizePrintedDiagrams(d);
+
       iframe.contentWindow.focus();
       iframe.contentWindow.print();
       setTimeout(()=>iframe.remove(),1500);
