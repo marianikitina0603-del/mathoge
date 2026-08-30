@@ -62,7 +62,7 @@
   async function prepareSourceDiagrams(root){
     if(!root)return;
     await waitForImages(root);
-    const failed=[...root.querySelectorAll('img.number10-diagram,img.number11-diagram,img.number13-diagram,img.number15-diagram,img.number16-diagram,img.number17-diagram')].find(img=>!img.naturalWidth);
+    const failed=[...root.querySelectorAll('img.number10-diagram,img.number11-diagram,img.number13-diagram,img.number15-diagram,img.number16-diagram,img.number17-diagram,img.number18-diagram')].find(img=>!img.naturalWidth);
     if(failed)throw new Error('Рисунок задания недоступен: '+failed.getAttribute('src'));
   }
 
@@ -117,13 +117,10 @@
     [...content.children].forEach(block=>{
       const practicalTasks=[...block.querySelectorAll('.preview-practical-tasks > .preview-task')];
       if(practicalTasks.length>1){
-        // Контекст и рисунок №1–5 печатаются один раз вместе с первым заданием.
         const first=block.cloneNode(true);
         [...first.querySelectorAll('.preview-practical-tasks > .preview-task')].forEach((task,index)=>{if(index>0)task.remove();});
         first.classList.add('print-unit');
         units.push(first);
-        // №2–5 становятся самостоятельными неделимыми единицами. Поэтому каждое
-        // переносится только если целиком не помещается в оставшееся место колонки.
         practicalTasks.slice(1).forEach(task=>{
           const wrapper=document.createElement('div');
           wrapper.className='preview-practical-block practical-continuation print-unit';
@@ -142,9 +139,7 @@
     return units;
   }
 
-  function nextFrame(win){
-    return new Promise(resolve=>(win.requestAnimationFrame||requestAnimationFrame)(()=>resolve()));
-  }
+  function nextFrame(win){return new Promise(resolve=>(win.requestAnimationFrame||requestAnimationFrame)(()=>resolve()));}
 
   async function paginateByRealHeight(d,root,units,head){
     let pageCount=0;
@@ -156,7 +151,6 @@
       if(pageCount===1&&head)page.appendChild(d.importNode(head,true));
       return page;
     }
-
     let page=newPage();
     for(const sourceUnit of units){
       const unit=d.importNode(sourceUnit,true);
@@ -164,9 +158,6 @@
       await waitForImages(unit);
       if(d.fonts&&d.fonts.ready){try{await d.fonts.ready;}catch(e){}}
       await nextFrame(d.defaultView);
-
-      // Проверяем фактическую высоту уже отрисованного задания, а не примерный
-      // коэффициент. Небольшой запас 2 px защищает от округления при печати.
       if(page.scrollHeight>page.clientHeight+2){
         const hasOtherUnit=[...page.children].some(el=>el!==unit&&el.classList.contains('print-unit'));
         if(hasOtherUnit){
@@ -194,7 +185,6 @@
         if(!source)return;
         await preparePrintMath(source);
         await prepareSourceDiagrams(source);
-
         const clone=source.cloneNode(true);
         clone.querySelectorAll('.teacher-answer-page,.solution-grid,.solution-grid-svg,.solution-grid-answer,.answer-line').forEach(el=>el.remove());
         compactPracticalPrintLayout(clone);
@@ -204,8 +194,6 @@
 
         iframe=document.createElement('iframe');
         iframe.setAttribute('aria-hidden','true');
-        // Размер равен печатной области A4 landscape при полях 7 мм. Это позволяет
-        // до вызова print() измерить именно ту высоту, которая реально доступна.
         iframe.style.cssText='position:fixed;left:-400mm;top:0;width:283mm;height:196mm;border:0;visibility:hidden;pointer-events:none;';
         document.body.appendChild(iframe);
         const d=iframe.contentDocument;
@@ -242,7 +230,8 @@
           .preview-table-scroll{overflow:visible}.stove-task-diagram img{max-height:95px!important;width:auto!important;max-width:100%!important}
           .teacher-answer-page,.solution-grid,.solution-grid-svg,.solution-grid-answer,.answer-line{display:none!important}
           .number10-diagram,.number11-diagram,.number13-diagram{display:block;width:auto;height:auto;max-width:65mm;max-height:37mm;object-fit:contain;margin:2mm auto;break-inside:avoid;page-break-inside:avoid}
-          .number15-task-layout,.number16-task-layout,.number17-task-layout{display:flow-root;min-width:0}.number15-diagram,.number16-diagram,.number17-diagram{float:right;display:block;width:26mm;height:20mm;max-width:34%;max-height:20mm;object-fit:contain;object-position:center;margin:0 0 1mm 2mm;break-inside:avoid;page-break-inside:avoid}
+          .number15-task-layout,.number16-task-layout,.number17-task-layout,.number18-task-layout{display:flow-root;min-width:0}
+          .number15-diagram,.number16-diagram,.number17-diagram,.number18-diagram{float:right;display:block;width:26mm;height:20mm;max-width:34%;max-height:20mm;object-fit:contain;object-position:center;margin:0 0 1mm 2mm;break-inside:avoid;page-break-inside:avoid}
           .number13-condition-diagram{max-height:13mm}.number13-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1mm 3mm;margin:1mm 0;font-size:6.5pt}
           .number11-options{display:flex;gap:3mm;justify-content:space-between;flex-wrap:wrap}.number11-section-title{font-weight:700;font-size:6.5pt;margin:1mm 0}.number11-answer-note{margin:1mm 0 0}
           @media print{html,body{width:auto}.two-up-grid{width:100%}.two-up-page{overflow:hidden}}
@@ -252,13 +241,11 @@
         d.open();
         d.write(`<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Печать заданий</title><style>${css}</style>${mathStyles}</head><body><div style="display:none" aria-hidden="true">${mathCache}</div><main class="two-up-grid"></main></body></html>`);
         d.close();
-
         const root=d.querySelector('.two-up-grid');
         await paginateByRealHeight(d,root,units,head);
         await prepareSourceDiagrams(d);
         if(d.fonts&&d.fonts.ready){try{await d.fonts.ready;}catch(e){}}
         await nextFrame(d.defaultView);
-
         iframe.contentWindow.focus();
         iframe.contentWindow.print();
         setTimeout(()=>iframe&&iframe.remove(),1200);
