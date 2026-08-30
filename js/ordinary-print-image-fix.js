@@ -1,50 +1,72 @@
-// Финальные размеры рисунков только для обычной печати варианта с решением.
-// Скрытый iframe режима «2 задания на листе» этот файл не подключает.
+// Жёсткая фиксация размеров рисунков только для обычной печати варианта с решением.
+// Режим «2 задания на листе» печатает собственный iframe и этим кодом не затрагивается.
 (function(){
-  if(document.getElementById('ordinary-print-image-fix'))return;
-  const style=document.createElement('style');
-  style.id='ordinary-print-image-fix';
-  style.textContent=`
-    @media print{
-      #examPaper .number11-diagram{
-        display:block!important;
-        float:none!important;
-        width:auto!important;
-        height:auto!important;
-        max-width:90mm!important;
-        max-height:48mm!important;
-        object-fit:contain!important;
-        object-position:center!important;
-        margin:2mm auto!important;
-        break-inside:avoid!important;
-        page-break-inside:avoid!important;
-      }
+  if(window.__ordinaryPrintImageFixInstalled)return;
+  window.__ordinaryPrintImageFixInstalled=true;
 
-      #examPaper .number15-task-layout,
-      #examPaper .number16-task-layout,
-      #examPaper .number17-task-layout,
-      #examPaper .number18-task-layout{
-        display:flow-root!important;
-        min-width:0!important;
-      }
+  let backups=[];
 
-      #examPaper .number15-diagram,
-      #examPaper .number16-diagram,
-      #examPaper .number17-diagram,
-      #examPaper .number18-diagram{
-        float:right!important;
-        display:block!important;
-        width:42mm!important;
-        height:30mm!important;
-        max-width:38%!important;
-        max-height:30mm!important;
-        object-fit:contain!important;
-        object-position:center!important;
-        margin:0 0 2mm 4mm!important;
-        break-inside:avoid!important;
-        page-break-inside:avoid!important;
-      }
-    }
-  `;
-  document.head.appendChild(style);
+  function remember(el){
+    if(backups.some(x=>x.el===el))return;
+    backups.push({el,style:el.getAttribute('style')});
+  }
+
+  function setImportant(el,name,value){
+    remember(el);
+    el.style.setProperty(name,value,'important');
+  }
+
+  function applyOrdinaryPrintSizes(){
+    const paper=document.getElementById('examPaper');
+    if(!paper)return;
+
+    paper.querySelectorAll('.number11-diagram').forEach(img=>{
+      setImportant(img,'display','block');
+      setImportant(img,'float','none');
+      setImportant(img,'width','auto');
+      setImportant(img,'height','auto');
+      setImportant(img,'max-width','65mm');
+      setImportant(img,'max-height','37mm');
+      setImportant(img,'object-fit','contain');
+      setImportant(img,'object-position','center');
+      setImportant(img,'margin','2mm auto');
+    });
+
+    paper.querySelectorAll('.number15-task-layout,.number16-task-layout,.number17-task-layout,.number18-task-layout').forEach(layout=>{
+      setImportant(layout,'display','flow-root');
+      setImportant(layout,'min-width','0');
+    });
+
+    paper.querySelectorAll('.number15-diagram,.number16-diagram,.number17-diagram,.number18-diagram').forEach(img=>{
+      setImportant(img,'float','right');
+      setImportant(img,'display','block');
+      setImportant(img,'width','42mm');
+      setImportant(img,'height','30mm');
+      setImportant(img,'max-width','38%');
+      setImportant(img,'max-height','30mm');
+      setImportant(img,'object-fit','contain');
+      setImportant(img,'object-position','center');
+      setImportant(img,'margin','0 0 2mm 4mm');
+    });
+  }
+
+  function restore(){
+    backups.forEach(({el,style})=>{
+      if(!el?.isConnected)return;
+      if(style===null)el.removeAttribute('style');
+      else el.setAttribute('style',style);
+    });
+    backups=[];
+  }
+
+  // Срабатывает непосредственно перед стандартным window.print().
+  window.addEventListener('beforeprint',applyOrdinaryPrintSizes);
+  window.addEventListener('afterprint',restore);
+
+  // Дополнительно применяем раньше обработчика print-two-up.js,
+  // чтобы размеры точно успели попасть в браузерный предпросмотр печати.
+  document.addEventListener('click',event=>{
+    const btn=event.target.closest('#printVariant');
+    if(btn)applyOrdinaryPrintSizes();
+  },true);
 })();
