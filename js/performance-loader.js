@@ -1,6 +1,6 @@
 // Отложенная загрузка тяжёлой части банка заданий.
 (function(){
-  const BANK_SRC='js/plots-format.js?v=20260830-perf-2';
+  const BANK_SRC='js/plots-format.js?v=20260830-perf-4';
   let bankPromise=null;
 
   function showLoadingHint(){
@@ -55,8 +55,6 @@
   });
   observer.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});
 
-  // После выполнения остальных обычных script-тегов заменяем тяжёлый рендер конструктора
-  // на ленивый: сначала только номера, затем прототипы, затем содержимое прототипа.
   setTimeout(()=>{
     const root=document.querySelector('#builderBankList');
     if(!root || typeof window.renderBuilderBank!=='function' || typeof tasks==='undefined')return;
