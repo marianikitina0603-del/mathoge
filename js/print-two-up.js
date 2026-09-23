@@ -232,6 +232,9 @@
           .preview-practical-context-copy .route-data-table,.preview-practical-context-copy table{clear:both}
           .preview-practical-tasks{padding:0;clear:both}
           .preview-task{display:grid;grid-template-columns:15px 1fr;gap:3px;padding:2.5px 0;border-bottom:1px solid #bbb;break-inside:avoid;page-break-inside:avoid}
+                    .mfrac{display:inline-flex!important;vertical-align:middle!important;flex-direction:column!important;text-align:center!important;line-height:1.02!important;margin:0 .12em!important;white-space:nowrap!important}
+          .mfrac>span:first-child{display:block!important;border-bottom:.8px solid currentColor!important;padding:0 .16em .06em!important}
+          .mfrac>span:last-child{display:block!important;padding:.06em .16em 0!important}
           .preview-task-number{font-size:7pt;font-weight:bold}.preview-task h4{font-size:7pt;margin:0 0 1px}
           .task-math{font-size:7pt!important;line-height:1.16!important;margin:0!important}
           .route-data-table,table{width:100%!important;border-collapse:collapse!important;table-layout:fixed!important;font-size:5.8pt!important;margin:2px 0!important}
