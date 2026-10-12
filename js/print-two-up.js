@@ -226,9 +226,9 @@
           .preview-practical-context-grid{display:block}
           .preview-practical-context-grid::after{content:'';display:block;clear:both}
           .preview-practical-context-copy{display:block;font-size:6.7pt;line-height:1.16;min-width:0}
-          .preview-plan{float:right;width:max-content;max-width:34%;margin:0 0 2mm 4mm;padding:2px;border:1px solid #bbb;text-align:center;break-inside:avoid;page-break-inside:avoid}
+          .preview-plan{float:right;width:max-content;max-width:46%;margin:0 0 2mm 4mm;padding:2px;border:1px solid #bbb;text-align:center;break-inside:avoid;page-break-inside:avoid}
           .preview-plan-title{font-size:5.5pt;white-space:normal}
-                    .preview-plan img{display:block;width:auto;height:auto;max-width:100%;max-height:120px;margin:auto;object-fit:contain}
+          .preview-plan img{display:block;width:auto;height:auto;max-width:100%;max-height:155px;margin:auto;object-fit:contain}
           .preview-practical-context-copy .route-data-table,.preview-practical-context-copy table{clear:both}
           .preview-practical-tasks{padding:0;clear:both}
           .preview-task{display:grid;grid-template-columns:15px 1fr;gap:3px;padding:2.5px 0;border-bottom:1px solid #bbb;break-inside:avoid;page-break-inside:avoid}
@@ -241,12 +241,11 @@
           .route-data-table th,.route-data-table td,table th,table td{border:1px solid #555!important;padding:1px 2px!important;font-size:5.8pt!important;line-height:1.05!important;overflow-wrap:anywhere}
           .preview-table-scroll{overflow:visible}.stove-task-diagram img{max-height:95px!important;width:auto!important;max-width:100%!important}
           .teacher-answer-page,.solution-grid,.solution-grid-svg,.solution-grid-answer,.answer-line{display:none!important}
-          .number10-diagram,.number11-diagram,.number13-diagram{display:block;width:auto;height:auto;max-width:65mm;max-height:37mm;object-fit:contain;margin:2mm auto;break-inside:avoid;page-break-inside:avoid}
           .number15-task-layout,.number16-task-layout,.number17-task-layout,.number18-task-layout{display:flow-root;min-width:0}
-          .number15-diagram,.number16-diagram,.number17-diagram,.number18-diagram{float:right;display:block;width:26mm;height:20mm;max-width:34%;max-height:20mm;object-fit:contain;object-position:center;margin:0 0 1mm 2mm;break-inside:avoid;page-break-inside:avoid}
-                    .number10-diagram,.number11-diagram,.number13-diagram{display:block;width:auto;height:auto;max-width:75mm;max-height:45mm;object-fit:contain;margin:2mm auto;break-inside:avoid;page-break-inside:avoid}
+          .number10-diagram,.number11-diagram,.number13-diagram{display:block;width:auto;height:auto;max-width:75mm;max-height:45mm;object-fit:contain;margin:2mm auto;break-inside:avoid;page-break-inside:avoid}
           .number11-options{display:flex;gap:3mm;justify-content:space-between;flex-wrap:wrap}.number11-section-title{font-weight:700;font-size:6.5pt;margin:1mm 0}.number11-answer-note{margin:1mm 0 0}
-                    .number15-diagram,.number16-diagram,.number17-diagram,.number18-diagram{float:right;display:block;width:32mm;height:24mm;max-width:42%;max-height:24mm;object-fit:contain;object-position:center;margin:0 0 1mm 2mm;break-inside:avoid;page-break-inside:avoid}
+          .number15-diagram,.number16-diagram,.number17-diagram{float:right;display:block;width:32mm;height:24mm;max-width:42%;max-height:24mm;object-fit:contain;object-position:center;margin:0 0 1mm 2mm;break-inside:avoid;page-break-inside:avoid}
+          .number18-diagram{float:right;display:block;width:40mm;height:32mm;max-width:52%;max-height:32mm;object-fit:contain;object-position:center;margin:0 0 1mm 2mm;break-inside:avoid;page-break-inside:avoid}
         `;
         const mathStyles=document.getElementById('MJX-SVG-styles')?.outerHTML||'';
         const mathCache=document.getElementById('MJX-SVG-global-cache')?.outerHTML||'';
